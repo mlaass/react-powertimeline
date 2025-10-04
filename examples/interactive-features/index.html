@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Features - PowerTimeline</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .timeline-section {
+            display: flex;
+            flex-direction: column;
+        }
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .control-panel {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .control-panel h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            color: #495057;
+        }
+        .timeline-container {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .interaction-log {
+            background-color: #f1f3f4;
+            border-radius: 4px;
+            padding: 12px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        button:hover { background-color: #e9ecef; }
+        button.active { background-color: #007bff; color: white; }
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .zoom-slider {
+            flex: 1;
+        }
+        .time-display {
+            background-color: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .selection-info {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        .selection-info.empty {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Features Demo</h1>
+        <p>Explore all interactive capabilities of PowerTimeline including pan, zoom, selection, and real-time updates.</p>
+        
+        <div class="feature-grid">
+            <div class="timeline-section">
+                <div id="timeline-root" class="timeline-container"></div>
+                
+                <div class="time-display">
+                    Current View: <span id="current-time-range">Loading...</span>
+                </div>
+                
+                <div id="selection-info" class="selection-info empty">
+                    <strong>No item selected</strong> - Click on any timeline item to see details
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <div class="control-panel">
+                    <h3>🎮 Navigation Controls</h3>
+                    <div class="button-group">
+                        <button id="zoom-in">Zoom In</button>
+                        <button id="zoom-out">Zoom Out</button>
+                        <button id="zoom-fit">Fit All</button>
+                        <button id="reset-view">Reset</button>
+                    </div>
+                    <div class="zoom-controls">
+                        <span>Zoom:</span>
+                        <input type="range" id="zoom-slider" class="zoom-slider" min="0.1" max="10" step="0.1" value="1">
+                        <span id="zoom-level">1x</span>
+                    </div>
+                </div>
+
+                <div class="control-panel">
+                    <h3>⏱️ Time Navigation</h3>
+                    <div class="button-group">
+                        <button id="go-start">Go to Start</button>
+                        <button id="go-end">Go to End</button>
+                        <button id="pan-left">← Pan Left</button>
+                        <button id="pan-right">Pan Right →</button>
+                    </div>
+                </div>
+
+                <div class="control-panel">
+                    <h3>🎯 Selection Tools</h3>
+                    <div class="button-group">
+                        <button id="select-all-events">Select Events</button>
+                        <button id="select-all-ranges">Select Ranges</button>
+                        <button id="clear-selection">Clear Selection</button>
+                    </div>
+                </div>
+
+                <div class="control-panel">
+                    <h3>📊 Data Controls</h3>
+                    <div class="button-group">
+                        <button id="add-random-event">Add Event</button>
+                        <button id="add-random-range">Add Range</button>
+                        <button id="simulate-realtime">Real-time Mode</button>
+                    </div>
+                </div>
+
+                <div class="control-panel">
+                    <h3>📝 Interaction Log</h3>
+                    <div class="interaction-log" id="interaction-log">
+                        <div>Timeline initialized...</div>
+                    </div>
+                    <button id="clear-log" style="margin-top: 8px;">Clear Log</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px; background-color: #e9ecef; border-radius: 8px;">
+            <h3>🚀 Interactive Features:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                <div>
+                    <h4>Mouse Interactions:</h4>
+                    <ul>
+                        <li>Wheel to zoom in/out</li>
+                        <li>Drag to pan timeline</li>
+                        <li>Click items to select</li>
+                        <li>Hover for tooltips</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Keyboard Shortcuts:</h4>
+                    <ul>
+                        <li>Arrow keys to navigate</li>
+                        <li>+/- to zoom</li>
+                        <li>Space to select</li>
+                        <li>Esc to clear selection</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Touch Gestures:</h4>
+                    <ul>
+                        <li>Pinch to zoom</li>
+                        <li>Swipe to pan</li>
+                        <li>Tap to select</li>
+                        <li>Long press for context</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./main.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Demo - PowerTimeline</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .accessibility-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .timeline-container {
+            margin: 20px 0;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            position: relative;
+        }
+        .timeline-container:focus-within {
+            outline: 3px solid #80bdff;
+            outline-offset: 2px;
+        }
+        .screen-reader-info {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        .keyboard-help {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .keyboard-help h3 {
+            margin-top: 0;
+            color: #0c5460;
+        }
+        .key-combo {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .status-panel {
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 12px 16px;
+            margin-top: 16px;
+            border-radius: 0 4px 4px 0;
+        }
+        button, select, input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        button:focus {
+            outline: 2px solid #80bdff;
+            outline-offset: 2px;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .high-contrast {
+            filter: contrast(150%) brightness(1.2);
+        }
+        .large-text {
+            font-size: 1.2em;
+        }
+        .reduced-motion * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Accessibility Demo</h1>
+        <p>This example demonstrates PowerTimeline's accessibility features including keyboard navigation, screen reader support, and customization options.</p>
+        
+        <div class="accessibility-controls">
+            <div class="control-group">
+                <label for="contrast-toggle">
+                    <input type="checkbox" id="contrast-toggle"> High Contrast Mode
+                </label>
+                <label for="large-text-toggle">
+                    <input type="checkbox" id="large-text-toggle"> Large Text
+                </label>
+                <label for="reduced-motion-toggle">
+                    <input type="checkbox" id="reduced-motion-toggle"> Reduce Motion
+                </label>
+            </div>
+            
+            <div class="control-group">
+                <label for="focus-indicator">Focus Indicator Style:</label>
+                <select id="focus-indicator">
+                    <option value="default">Default</option>
+                    <option value="high-contrast">High Contrast</option>
+                    <option value="thick-border">Thick Border</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="announce-changes">
+                    <input type="checkbox" id="announce-changes" checked> Announce Changes
+                </label>
+                <button id="test-screen-reader">Test Screen Reader</button>
+            </div>
+        </div>
+
+        <div class="keyboard-help">
+            <h3>Keyboard Navigation</h3>
+            <ul>
+                <li><span class="key-combo">Tab</span> / <span class="key-combo">Shift+Tab</span> - Navigate between interactive elements</li>
+                <li><span class="key-combo">Arrow Keys</span> - Pan timeline (←→) or navigate lanes (↑↓)</li>
+                <li><span class="key-combo">+</span> / <span class="key-combo">-</span> - Zoom in/out</li>
+                <li><span class="key-combo">Home</span> / <span class="key-combo">End</span> - Go to start/end of timeline</li>
+                <li><span class="key-combo">Space</span> - Select focused item</li>
+                <li><span class="key-combo">Enter</span> - Activate focused item</li>
+                <li><span class="key-combo">Escape</span> - Clear selection</li>
+            </ul>
+        </div>
+        
+        <div id="timeline-root" class="timeline-container" role="application" aria-label="Accessible timeline demonstration"></div>
+        
+        <div class="status-panel">
+            <div id="live-region" aria-live="polite" aria-atomic="true">
+                Timeline loaded with accessibility features enabled.
+            </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <h3>Accessibility Features Demonstrated:</h3>
+            <ul>
+                <li><strong>ARIA Labels:</strong> Comprehensive labeling for screen readers</li>
+                <li><strong>Keyboard Navigation:</strong> Full keyboard control without mouse dependency</li>
+                <li><strong>Focus Management:</strong> Logical focus order and visible focus indicators</li>
+                <li><strong>Live Regions:</strong> Dynamic content announcements</li>
+                <li><strong>High Contrast:</strong> Enhanced visual contrast for low vision users</li>
+                <li><strong>Reduced Motion:</strong> Respects user's motion preferences</li>
+                <li><strong>Screen Reader Support:</strong> Compatible with NVDA, JAWS, VoiceOver</li>
+                <li><strong>WCAG 2.1 AA Compliance:</strong> Meets accessibility guidelines</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="screen-reader-info" id="sr-instructions">
+        Use arrow keys to navigate the timeline. Press Space to select items and Enter to activate them. 
+        The timeline contains events, metrics, and time ranges organized in lanes.
+    </div>
+
+    <script type="module" src="./main.tsx"></script>
+</body>
+</html>

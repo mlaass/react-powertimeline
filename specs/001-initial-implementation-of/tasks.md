@@ -87,11 +87,11 @@
 
 ## Phase 3.6: Documentation & Examples
 
-- [ ] T051 [P] Basic timeline example in `examples/basic-timeline/`
-- [ ] T052 [P] Large dataset performance example in `examples/large-dataset/`
-- [ ] T053 [P] Accessibility demo example in `examples/accessibility-demo/`
-- [ ] T054 [P] Custom styling example in `examples/custom-styling/`
-- [ ] T055 [P] Interactive features example in `examples/interactive-features/`
+- [x] T051 [P] Basic timeline example in `examples/basic-timeline/`
+- [x] T052 [P] Large dataset performance example in `examples/large-dataset/`
+- [x] T053 [P] Accessibility demo example in `examples/accessibility-demo/`
+- [x] T054 [P] Custom styling example in `examples/custom-styling/`
+- [x] T055 [P] Interactive features example in `examples/interactive-features/`
 
 ### Storybook Stories
 - [ ] T056 [P] PowerTimeline Storybook stories in `stories/PowerTimeline.stories.tsx`
@@ -106,12 +106,12 @@
 
 ## Phase 3.7: Polish
 
-- [ ] T063 [P] Update README.md with installation and usage instructions
-- [ ] T064 [P] Generate API documentation from TypeScript interfaces
-- [ ] T065 [P] Create CHANGELOG.md following semantic versioning
-- [ ] T066 Run complete test suite and fix any remaining issues
-- [ ] T067 Optimize performance and validate all benchmarks pass
-- [ ] T068 Final accessibility audit and WCAG 2.1 AA compliance verification
+- [x] T063 [P] Update README.md with installation and usage instructions
+- [x] T064 [P] Generate API documentation from TypeScript interfaces
+- [x] T065 [P] Create CHANGELOG.md following semantic versioning
+- [x] T066 Run complete test suite and fix any remaining issues
+- [x] T067 Optimize performance and validate all benchmarks pass
+- [x] T068 Final accessibility audit and WCAG 2.1 AA compliance verification
 
 ## Dependencies
 
