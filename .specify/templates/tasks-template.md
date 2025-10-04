@@ -70,17 +70,19 @@
 - [ ] T018 CORS and security headers
 
 ## Phase 3.5: Polish
-- [ ] T019 [P] Unit tests for validation in tests/unit/test_validation.py
-- [ ] T020 Performance tests (<200ms)
-- [ ] T021 [P] Update docs/api.md
-- [ ] T022 Remove duplication
-- [ ] T023 Run manual-testing.md
+- [ ] T019 [P] Unit tests for validation in tests/unit/test_validation.ts
+- [ ] T020 Performance tests (React 18 concurrent features)
+- [ ] T021 [P] Create examples in /examples folder with TypeScript
+- [ ] T022 [P] Update docs/api.md with accessibility features
+- [ ] T023 [P] Storybook stories with accessibility demos
+- [ ] T024 Remove duplication
+- [ ] T025 Run manual-testing.md
 
 ## Dependencies
 - Tests (T004-T007) before implementation (T008-T014)
 - T008 blocks T009, T015
 - T016 blocks T018
-- Implementation before polish (T019-T023)
+- Implementation before polish (T019-T025)
 
 ## Parallel Example
 ```
@@ -122,6 +124,8 @@ Task: "Integration test auth in tests/integration/test_auth.py"
 - [ ] All contracts have corresponding tests
 - [ ] All entities have model tasks
 - [ ] All tests come before implementation
+- [ ] Examples tasks included for /examples folder
+- [ ] Accessibility and Storybook tasks included
 - [ ] Parallel tasks truly independent
 - [ ] Each task specifies exact file path
 - [ ] No task modifies same file as another [P] task
