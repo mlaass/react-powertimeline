@@ -1,27 +1,38 @@
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { TimeRangeItem } from '@/components/items/TimeRangeItem';
-import type { TimeRangeItem as TimeRangeItemProps } from '@/types';
+import { TimeRangeItem } from '../../../src/components/items/TimeRangeItem';
+import type { TimeRangeItemProps } from '../../../src/components/items/types';
+import { scaleTime } from 'd3-scale';
 
 /**
  * Contract Test for TimeRangeItem Component
  * 
- * These tests verify that the TimeRangeItem component implements the exact
  * interface specified in the API contract. Tests MUST fail until implementation
  * is complete.
  */
 
 describe('TimeRangeItem Contract', () => {
+  const mockTimeScale = {
+    scale: scaleTime()
+      .domain([new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T04:00:00Z')])
+      .range([0, 800]),
+    domain: [new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T04:00:00Z')] as [Date, Date],
+    range: [0, 800] as [number, number],
+  };
+
   const defaultProps: TimeRangeItemProps = {
     id: 'test-range',
     type: 'time-range',
     laneId: 'test-lane',
-    startTime: new Date('2024-01-01T02:00:00Z'),
-    endTime: new Date('2024-01-01T02:15:00Z'),
+    startTime: new Date('2024-01-01T01:00:00Z'),
+    endTime: new Date('2024-01-01T02:00:00Z'),
     style: {
       backgroundColor: '#28a745',
       opacity: 0.7,
     },
+    timeScale: mockTimeScale,
+    laneHeight: 100,
   };
 
   it('should accept all required props according to TimeRangeItem interface', () => {

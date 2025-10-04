@@ -1,33 +1,44 @@
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { CurveItem } from '@/components/items/CurveItem';
-import type { CurveItem as CurveItemProps } from '@/types';
+import { CurveItem } from '../../../src/components/items/CurveItem';
+import type { CurveItemProps } from '../../../src/components/items/types';
+import { scaleTime, scaleLinear } from 'd3-scale';
 
 /**
  * Contract Test for CurveItem Component
  * 
- * These tests verify that the CurveItem component implements the exact
  * interface specified in the API contract. Tests MUST fail until implementation
  * is complete.
  */
 
 describe('CurveItem Contract', () => {
-  const mockDataPoints = [
-    { time: new Date('2024-01-01T00:00:00Z'), value: 45 },
-    { time: new Date('2024-01-01T01:00:00Z'), value: 52 },
-    { time: new Date('2024-01-01T02:00:00Z'), value: 38 },
-    { time: new Date('2024-01-01T03:00:00Z'), value: 67 },
-  ];
+  const mockTimeScale = {
+    scale: scaleTime()
+      .domain([new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T04:00:00Z')])
+      .range([0, 800]),
+    domain: [new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T04:00:00Z')] as [Date, Date],
+    range: [0, 800] as [number, number],
+  };
+
+  const mockYScale = scaleLinear().domain([0, 100]).range([100, 0]);
 
   const defaultProps: CurveItemProps = {
     id: 'test-curve',
     type: 'curve',
     laneId: 'test-lane',
-    dataPoints: mockDataPoints,
+    dataPoints: [
+      { time: new Date('2024-01-01T01:00:00Z'), value: 10 },
+      { time: new Date('2024-01-01T02:00:00Z'), value: 20 },
+      { time: new Date('2024-01-01T03:00:00Z'), value: 15 },
+    ],
     style: {
       strokeColor: '#007bff',
       strokeWidth: 2,
     },
+    timeScale: mockTimeScale,
+    laneHeight: 100,
+    yScale: mockYScale,
   };
 
   it('should accept all required props according to CurveItem interface', () => {

@@ -1,7 +1,9 @@
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { EventItem } from '@/components/items/EventItem';
-import type { EventItem as EventItemProps } from '@/types';
+import { EventItem } from '../../../src/components/items/EventItem';
+import type { EventItemProps } from '../../../src/components/items/types';
+import { scaleTime } from 'd3-scale';
 
 /**
  * Contract Test for EventItem Component
@@ -12,6 +14,14 @@ import type { EventItem as EventItemProps } from '@/types';
  */
 
 describe('EventItem Contract', () => {
+  const mockTimeScale = {
+    scale: scaleTime()
+      .domain([new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T04:00:00Z')])
+      .range([0, 800]),
+    domain: [new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T04:00:00Z')] as [Date, Date],
+    range: [0, 800] as [number, number],
+  };
+
   const defaultProps: EventItemProps = {
     id: 'test-event',
     type: 'event',
@@ -22,6 +32,8 @@ describe('EventItem Contract', () => {
       color: '#dc3545',
       size: 10,
     },
+    timeScale: mockTimeScale,
+    laneHeight: 100,
   };
 
   it('should accept all required props according to EventItem interface', () => {
