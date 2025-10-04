@@ -19,6 +19,7 @@ import {
   ScreenReaderAnnouncer,
   FocusManager 
 } from '../../utils/accessibility';
+import { groupItemsByLane } from '../../utils/virtualization';
 
 export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
   lanes,

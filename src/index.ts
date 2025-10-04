@@ -15,6 +15,7 @@ export { TimelineAxis } from './components/TimelineAxis';
 export { CurveItem } from './components/items/CurveItem';
 export { EventItem } from './components/items/EventItem';
 export { TimeRangeItem } from './components/items/TimeRangeItem';
+export { ErrorBoundary } from './components/ErrorBoundary';
 
 // Hooks (for custom implementations)
 export { useTimeScale } from './hooks/useTimeScale';
@@ -34,17 +35,17 @@ export type {
   TimeScale,
   Viewport,
   VirtualizationState,
-  Lane,
+  Lane as LaneType,
   LaneStyle,
   Item,
   ItemLabel,
   LabelStyle,
-  CurveItem,
+  CurveItem as CurveItemType,
   DataPoint,
   CurveStyle,
-  EventItem,
+  EventItem as EventItemType,
   EventStyle,
-  TimeRangeItem,
+  TimeRangeItem as TimeRangeItemType,
   TimeRangeStyle,
   ItemType,
   MarkerType,
