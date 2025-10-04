@@ -1,8 +1,8 @@
 # Feature Specification: PowerTimeline Component Initial Implementation
 
-**Feature Branch**: `001-initial-implementation-of`  
-**Created**: October 4, 2025  
-**Status**: Draft  
+**Feature Branch**: `001-initial-implementation-of`
+**Created**: October 4, 2025
+**Status**: Draft
 **Input**: User description: "initial implementation of powertimeline component"
 
 ## User Scenarios & Testing *(mandatory)*
@@ -18,11 +18,11 @@ A developer integrates the PowerTimeline component into their application to dis
 5. **Given** a timeline on a mobile device, **When** a user performs touch gestures, **Then** pan and zoom interactions work smoothly with touch input
 
 ### Edge Cases
-- What happens when no data is available for the visible time range?
-- How does the system handle overlapping time range items in the same lane?
-- What occurs when the user zooms beyond the available data boundaries?
-- How does the component behave with extremely large datasets (thousands of items)?
-- What happens when lane heights are insufficient for stacked overlapping items?
+- When no data is available for the visible time range, component shows empty lanes
+- Overlapping time range items in the same lane are stacked with most recent items on top by default
+- When users zoom beyond available data boundaries, component triggers data loading for extended ranges
+- Component performance targets will be determined during implementation based on actual rendering benchmarks
+- When lane heights are insufficient for stacked overlapping items, component expands lane height or shows scroll indicators
 
 ## Requirements *(mandatory)*
 
@@ -34,11 +34,13 @@ A developer integrates the PowerTimeline component into their application to dis
 - **FR-005**: Component MUST trigger callbacks when the visible time range changes to enable dynamic data loading
 - **FR-006**: Component MUST support click and hover interactions on all data items
 - **FR-007**: Component MUST work responsively on both desktop (mouse) and mobile (touch) devices
-- **FR-008**: Component MUST render only visible items plus buffer zone for performance optimization
+- **FR-008**: Component MUST render only visible items plus configurable buffer zone for performance optimization (default: 50% of viewport width on each side)
 - **FR-009**: Component MUST accept an initial time range to define the starting view
 - **FR-010**: Component MUST provide configurable styling for lanes and data items
 - **FR-011**: Component MUST display a time axis with appropriate granularity based on zoom level
-- **FR-012**: Component MUST handle overlapping time range items by stacking them vertically within lanes
+- **FR-012**: Component MUST handle overlapping time range items by stacking them vertically within lanes (most recent items on top by default, with configurable stacking order)
+- **FR-013**: Component MUST show "No data" message in empty lanes when no data is available for the visible time range
+- **FR-014**: Component MUST trigger data loading callbacks when users zoom beyond available data boundaries to fetch extended ranges
 
 ### Key Entities
 - **Lane**: A horizontal container that groups related data items, with configurable height and styling
@@ -47,6 +49,13 @@ A developer integrates the PowerTimeline component into their application to dis
 - **Time Range Item**: Duration-based data displayed as horizontal bars with start and end times
 - **Time Scale**: The mapping between time domain and pixel coordinates for positioning items
 - **Viewport**: The currently visible time range and spatial area of the timeline
+
+### Configuration & Performance Specifications
+- **Buffer Zone**: Configurable rendering buffer extending beyond visible viewport (default: 50% of viewport width on each side)
+- **Stacking Order**: Configurable algorithm for overlapping time range items (default: most recent items on top)
+- **Performance Targets**: To be determined during implementation through benchmarking and optimization
+- **Empty State**: Standardized "No data" messaging for lanes without data in visible time range
+- **Zoom Boundaries**: Automatic data loading triggers when users zoom beyond current data boundaries
 
 ---
 
@@ -61,7 +70,7 @@ A developer integrates the PowerTimeline component into their application to dis
 
 ### Requirement Completeness
 - [x] No [NEEDS CLARIFICATION] markers remain
-- [x] Requirements are testable and unambiguous  
+- [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Scope is clearly bounded
 - [x] Dependencies and assumptions identified
