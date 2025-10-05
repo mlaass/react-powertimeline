@@ -11,6 +11,36 @@ import { PowerTimeline } from '../src';
 import type { TimeRange } from '../src';
 import type { Lane, CurveItem, EventItem, TimeRangeItem } from '../src/types';
 
+// Helper function to generate sin/cos curves
+function generateMathCurve(
+  id: string,
+  startTime: Date,
+  endTime: Date,
+  points: number,
+  amplitude: number,
+  frequency: number,
+  phase: number,
+  offset: number,
+  type: 'sin' | 'cos' = 'sin'
+) {
+  const timeSpan = endTime.getTime() - startTime.getTime();
+  const dataPoints: { time: Date; value: number }[] = [];
+  
+  for (let i = 0; i < points; i++) {
+    const progress = i / (points - 1);
+    const time = new Date(startTime.getTime() + progress * timeSpan);
+    
+    // Calculate the mathematical function value
+    const x = progress * frequency * 2 * Math.PI + phase;
+    const rawValue = type === 'sin' ? Math.sin(x) : Math.cos(x);
+    const value = amplitude * rawValue + offset;
+    
+    dataPoints.push({ time, value });
+  }
+  
+  return dataPoints;
+}
+
 // Sample data for development
 const lanes: Lane[] = [
   {
@@ -33,41 +63,186 @@ const lanes: Lane[] = [
   },
 ];
 
+const startTime = new Date('2024-01-01T00:00:00Z');
+const endTime = new Date('2024-01-01T04:00:00Z');
+
 const items = [
-  // Curve item (time series data)
+  // Sine wave - Low frequency, high amplitude (CPU usage pattern)
   {
     id: 'cpu-usage',
     type: 'curve' as const,
     laneId: 'metrics',
-    dataPoints: [
-      { time: new Date('2024-01-01T00:00:00Z'), value: 45 },
-      { time: new Date('2024-01-01T01:00:00Z'), value: 52 },
-      { time: new Date('2024-01-01T02:00:00Z'), value: 38 },
-      { time: new Date('2024-01-01T03:00:00Z'), value: 67 },
-    ],
+    dataPoints: generateMathCurve(
+      'cpu-usage',
+      startTime,
+      endTime,
+      50, // points
+      25, // amplitude
+      1.5, // frequency (1.5 cycles over 4 hours)
+      0, // phase
+      50 // offset (centers around 50%)
+    ),
     style: {
       strokeColor: '#007bff',
       strokeWidth: 2,
-      fillColor: 'rgba(0, 123, 255, 0.1)',
+      fillColor: 'rgba(0, 123, 255, 0.15)',
     },
-    label: { text: 'CPU Usage %', position: 'top' as const },
+    interpolation: 'linear',
+    label: { text: 'CPU Usage % (sin)', position: 'top' as const },
   } as CurveItem,
 
-  // Event item (point in time)
+  // Cosine wave - Medium frequency, medium amplitude (Memory pattern)
   {
-    id: 'error-spike',
+    id: 'memory-usage',
+    type: 'curve' as const,
+    laneId: 'metrics',
+    dataPoints: generateMathCurve(
+      'memory-usage',
+      startTime,
+      endTime,
+      40, // points
+      15, // amplitude
+      2, // frequency (2 cycles)
+      0, // phase
+      65, // offset (centers around 65%)
+      'cos'
+    ),
+    style: {
+      strokeColor: '#28a745',
+      strokeWidth: 2.5,
+      fillColor: 'rgba(40, 167, 69, 0.1)',
+    },
+    interpolation: 'linear',
+    label: { text: 'Memory % (cos)', position: 'bottom' as const },
+  } as CurveItem,
+
+  // High frequency sine - Network throughput spikes
+  {
+    id: 'network-throughput',
+    type: 'curve' as const,
+    laneId: 'metrics',
+    dataPoints: generateMathCurve(
+      'network-throughput',
+      startTime,
+      endTime,
+      80, // more points for high frequency
+      20, // amplitude
+      4, // frequency (4 cycles - high frequency)
+      Math.PI / 4, // phase shift
+      35 // offset
+    ),
+    style: {
+      strokeColor: '#fd7e14',
+      strokeWidth: 1.5,
+      strokeDasharray: '4,2',
+    },
+    interpolation: 'linear',
+    label: { text: 'Network MB/s (sin, high freq)', position: 'top' as const },
+  } as CurveItem,
+
+  // Phase-shifted cosine - Disk I/O with smooth curves
+  {
+    id: 'disk-io',
+    type: 'curve' as const,
+    laneId: 'metrics',
+    dataPoints: generateMathCurve(
+      'disk-io',
+      startTime,
+      endTime,
+      60, // points
+      18, // amplitude
+      1, // frequency (1 cycle)
+      Math.PI / 2, // 90-degree phase shift
+      45, // offset
+      'cos'
+    ),
+    style: {
+      strokeColor: '#6f42c1',
+      strokeWidth: 2,
+      fillColor: 'rgba(111, 66, 193, 0.2)',
+    },
+    interpolation: 'basis',
+    label: { text: 'Disk I/O % (cos, phase shift)', position: 'bottom' as const },
+  } as CurveItem,
+
+  // Double frequency sine - Temperature oscillations
+  {
+    id: 'temperature',
+    type: 'curve' as const,
+    laneId: 'metrics',
+    dataPoints: generateMathCurve(
+      'temperature',
+      startTime,
+      endTime,
+      70, // points
+      12, // amplitude
+      3, // frequency (3 cycles)
+      Math.PI / 6, // 30-degree phase shift
+      30 // offset
+    ),
+    style: {
+      strokeColor: '#dc3545',
+      strokeWidth: 2,
+      fillColor: 'rgba(220, 53, 69, 0.1)',
+    },
+    interpolation: 'linear',
+    label: { text: 'Temperature °C (sin, 3x freq)', position: 'top' as const },
+  } as CurveItem,
+
+  // Various event types with different markers
+  {
+    id: 'critical-error',
     type: 'event' as const,
     laneId: 'events',
-    time: new Date('2024-01-01T01:30:00Z'),
+    time: new Date('2024-01-01T01:15:00Z'),
     style: {
-      markerType: 'circle' as const,
+      markerType: 'triangle' as const,
       color: '#dc3545',
-      size: 10,
+      size: 8,
     },
-    label: { text: 'Error Spike', position: 'top' as const },
+    label: { text: 'Critical Error', position: 'top' as const },
   } as EventItem,
 
-  // Time range item (duration)
+  {
+    id: 'warning-alert',
+    type: 'event' as const,
+    laneId: 'events',
+    time: new Date('2024-01-01T02:45:00Z'),
+    style: {
+      markerType: 'square' as const,
+      color: '#ffc107',
+      size: 6,
+    },
+    label: { text: 'Warning', position: 'top' as const },
+  } as EventItem,
+
+  {
+    id: 'info-notification',
+    type: 'event' as const,
+    laneId: 'events',
+    time: new Date('2024-01-01T03:20:00Z'),
+    style: {
+      markerType: 'circle' as const,
+      color: '#17a2b8',
+      size: 5,
+    },
+    label: { text: 'Info', position: 'top' as const },
+  } as EventItem,
+
+  {
+    id: 'success-checkpoint',
+    type: 'event' as const,
+    laneId: 'events',
+    time: new Date('2024-01-01T03:45:00Z'),
+    style: {
+      markerType: 'circle' as const,
+      color: '#28a745',
+      size: 7,
+    },
+    label: { text: 'Success', position: 'top' as const },
+  } as EventItem,
+
+  // Deployment and maintenance time ranges
   {
     id: 'deployment-1',
     type: 'time-range' as const,
@@ -76,9 +251,22 @@ const items = [
     endTime: new Date('2024-01-01T02:15:00Z'),
     style: {
       backgroundColor: '#28a745',
-      opacity: 0.7,
+      opacity: 0.8,
     },
     label: { text: 'v2.1.0 Deploy', position: 'inline' as const },
+  } as TimeRangeItem,
+
+  {
+    id: 'maintenance-window',
+    type: 'time-range' as const,
+    laneId: 'deployments',
+    startTime: new Date('2024-01-01T03:30:00Z'),
+    endTime: new Date('2024-01-01T04:00:00Z'),
+    style: {
+      backgroundColor: '#6c757d',
+      opacity: 0.6,
+    },
+    label: { text: 'Maintenance', position: 'inline' as const },
   } as TimeRangeItem,
 ];
 

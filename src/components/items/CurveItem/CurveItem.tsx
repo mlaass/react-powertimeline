@@ -42,17 +42,37 @@ export const CurveItem: React.FC<CurveItemProps> = ({
 
     const curve = interpolationMap[interpolation];
     
+    // Create a default Y-scale if none provided
+    let effectiveYScale = yScale;
+    if (!effectiveYScale) {
+      // Find min/max values in the data
+      const values = dataPoints.map(d => d.value);
+      const minValue = Math.min(...values);
+      const maxValue = Math.max(...values);
+      
+      // Create a linear scale that maps data values to lane height (inverted)
+      const valueRange = maxValue - minValue;
+      if (valueRange > 0) {
+        effectiveYScale = (value: number) => {
+          const normalizedValue = (value - minValue) / valueRange;
+          return laneHeight - (normalizedValue * laneHeight * 0.8) - (laneHeight * 0.1); // 10% padding top/bottom
+        };
+      } else {
+        effectiveYScale = () => laneHeight / 2;
+      }
+    }
+    
     // Create line generator
     const lineGenerator = d3Line<typeof dataPoints[0]>()
       .x(d => timeScale.scale(d.time))
-      .y(d => yScale ? yScale(d.value) : laneHeight / 2)
+      .y(d => effectiveYScale(d.value))
       .curve(curve);
 
     // Create area generator if fill is specified
     const areaGenerator = style.fillColor ? d3Area<typeof dataPoints[0]>()
       .x(d => timeScale.scale(d.time))
       .y0(laneHeight)
-      .y1(d => yScale ? yScale(d.value) : laneHeight / 2)
+      .y1(d => effectiveYScale(d.value))
       .curve(curve) : null;
 
     return {
@@ -113,18 +133,37 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       />
       
       {/* Data points (optional, for interaction) */}
-      {dataPoints.map((point, index) => (
-        <circle
-          key={index}
-          cx={timeScale.scale(point.time)}
-          cy={yScale ? yScale(point.value) : laneHeight / 2}
-          r={2}
-          fill={style.strokeColor}
-          opacity={0}
-          className="curve-point"
-          style={{ cursor: onItemClick ? 'pointer' : 'default' }}
-        />
-      ))}
+      {dataPoints.map((point, index) => {
+        // Recreate the effective Y-scale for consistency
+        let effectiveYScale = yScale;
+        if (!effectiveYScale) {
+          const values = dataPoints.map(d => d.value);
+          const minValue = Math.min(...values);
+          const maxValue = Math.max(...values);
+          const valueRange = maxValue - minValue;
+          if (valueRange > 0) {
+            effectiveYScale = (value: number) => {
+              const normalizedValue = (value - minValue) / valueRange;
+              return laneHeight - (normalizedValue * laneHeight * 0.8) - (laneHeight * 0.1);
+            };
+          } else {
+            effectiveYScale = () => laneHeight / 2;
+          }
+        }
+        
+        return (
+          <circle
+            key={index}
+            cx={timeScale.scale(point.time)}
+            cy={effectiveYScale(point.value)}
+            r={2}
+            fill={style.strokeColor}
+            opacity={0}
+            className="curve-point"
+            style={{ cursor: onItemClick ? 'pointer' : 'default' }}
+          />
+        );
+      })}
       
       {/* Label */}
       {label && (

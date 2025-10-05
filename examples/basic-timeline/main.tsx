@@ -9,6 +9,35 @@ import ReactDOM from 'react-dom/client';
 import { PowerTimeline } from '../../src';
 import type { Lane, CurveItem, EventItem, TimeRangeItem, TimeRange } from '../../src/types';
 
+// Helper function to generate sin/cos curves
+function generateMathCurve(
+  startTime: Date,
+  endTime: Date,
+  points: number,
+  amplitude: number,
+  frequency: number,
+  phase: number,
+  offset: number,
+  type: 'sin' | 'cos' = 'sin'
+) {
+  const timeSpan = endTime.getTime() - startTime.getTime();
+  const dataPoints: { time: Date; value: number }[] = [];
+  
+  for (let i = 0; i < points; i++) {
+    const progress = i / (points - 1);
+    const time = new Date(startTime.getTime() + progress * timeSpan);
+    
+    // Calculate the mathematical function value
+    const x = progress * frequency * 2 * Math.PI + phase;
+    const rawValue = type === 'sin' ? Math.sin(x) : Math.cos(x);
+    const value = amplitude * rawValue + offset;
+    
+    dataPoints.push({ time, value });
+  }
+  
+  return dataPoints;
+}
+
 // Sample data for basic timeline
 const lanes: Lane[] = [
   {
@@ -59,32 +88,73 @@ const items: (CurveItem | EventItem | TimeRangeItem)[] = [
     label: { text: 'Maintenance', position: 'top' },
   },
 
-  // Performance Metrics (CPU Usage)
+  // Sine wave - CPU Usage pattern
   {
     id: 'cpu-usage',
     type: 'curve',
     laneId: 'metrics',
-    dataPoints: [
-      { time: new Date('2024-01-01T09:00:00Z'), value: 20 },
-      { time: new Date('2024-01-01T09:30:00Z'), value: 35 },
-      { time: new Date('2024-01-01T10:00:00Z'), value: 45 },
-      { time: new Date('2024-01-01T10:30:00Z'), value: 60 },
-      { time: new Date('2024-01-01T11:00:00Z'), value: 75 },
-      { time: new Date('2024-01-01T11:30:00Z'), value: 90 }, // Peak during error
-      { time: new Date('2024-01-01T12:00:00Z'), value: 65 },
-      { time: new Date('2024-01-01T12:30:00Z'), value: 40 },
-      { time: new Date('2024-01-01T13:00:00Z'), value: 30 },
-      { time: new Date('2024-01-01T13:30:00Z'), value: 25 },
-      { time: new Date('2024-01-01T14:00:00Z'), value: 15 }, // Drop during maintenance
-      { time: new Date('2024-01-01T14:30:00Z'), value: 20 },
-      { time: new Date('2024-01-01T15:00:00Z'), value: 25 },
-    ],
+    dataPoints: generateMathCurve(
+      new Date('2024-01-01T08:00:00Z'),
+      new Date('2024-01-01T16:00:00Z'),
+      40, // points
+      30, // amplitude
+      2, // frequency (2 cycles over 8 hours)
+      0, // phase
+      50 // offset (centers around 50%)
+    ),
     style: {
       strokeColor: '#007bff',
       strokeWidth: 2,
-      fillColor: 'rgba(0, 123, 255, 0.1)',
+      fillColor: 'rgba(0, 123, 255, 0.15)',
     },
-    label: { text: 'CPU Usage %', position: 'top' },
+    interpolation: 'linear',
+    label: { text: 'CPU Usage % (sin)', position: 'top' },
+  },
+
+  // Cosine wave - Memory Usage pattern
+  {
+    id: 'memory-usage',
+    type: 'curve',
+    laneId: 'metrics',
+    dataPoints: generateMathCurve(
+      new Date('2024-01-01T08:00:00Z'),
+      new Date('2024-01-01T16:00:00Z'),
+      35, // points
+      20, // amplitude
+      1.5, // frequency (1.5 cycles)
+      Math.PI / 3, // 60-degree phase shift
+      60, // offset (centers around 60%)
+      'cos'
+    ),
+    style: {
+      strokeColor: '#28a745',
+      strokeWidth: 2.5,
+      fillColor: 'rgba(40, 167, 69, 0.1)',
+    },
+    interpolation: 'linear',
+    label: { text: 'Memory % (cos)', position: 'bottom' },
+  },
+
+  // High frequency sine - Network Throughput
+  {
+    id: 'network-throughput',
+    type: 'curve',
+    laneId: 'metrics',
+    dataPoints: generateMathCurve(
+      new Date('2024-01-01T08:00:00Z'),
+      new Date('2024-01-01T16:00:00Z'),
+      60, // more points for high frequency
+      15, // amplitude
+      3, // frequency (3 cycles - higher frequency)
+      Math.PI / 4, // 45-degree phase shift
+      25 // offset
+    ),
+    style: {
+      strokeColor: '#fd7e14',
+      strokeWidth: 2,
+    },
+    interpolation: 'linear',
+    label: { text: 'Network MB/s (sin, high freq)', position: 'top' },
   },
 
   // Deployments

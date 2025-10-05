@@ -174,12 +174,13 @@ export const EventItem: React.FC<EventItemProps> = ({
         <circle
           cx={x}
           cy={y}
-          r={(style.size || 8) + 4}
+          r={(style.size || 8) + 2}
           fill="none"
           stroke={isSelected ? '#007bff' : '#6c757d'}
-          strokeWidth={2}
-          strokeDasharray="2,2"
+          strokeWidth={1.5}
+          strokeDasharray="3,2"
           className="event-indicator"
+          opacity={0.8}
         />
       )}
     </g>

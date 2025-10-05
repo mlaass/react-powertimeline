@@ -45,6 +45,35 @@ class PerformanceMonitor {
   }
 }
 
+// Helper function to generate sin/cos curves
+function generateMathCurve(
+  startTime: Date,
+  endTime: Date,
+  points: number,
+  amplitude: number,
+  frequency: number,
+  phase: number,
+  offset: number,
+  type: 'sin' | 'cos' = 'sin'
+) {
+  const timeSpan = endTime.getTime() - startTime.getTime();
+  const dataPoints: { time: Date; value: number }[] = [];
+  
+  for (let i = 0; i < points; i++) {
+    const progress = i / (points - 1);
+    const time = new Date(startTime.getTime() + progress * timeSpan);
+    
+    // Calculate the mathematical function value
+    const x = progress * frequency * 2 * Math.PI + phase;
+    const rawValue = type === 'sin' ? Math.sin(x) : Math.cos(x);
+    const value = amplitude * rawValue + offset;
+    
+    dataPoints.push({ time, value });
+  }
+  
+  return dataPoints;
+}
+
 // Data generator for large datasets
 function generateLargeDataset(itemCount: number) {
   const lanes: Lane[] = [
@@ -65,11 +94,27 @@ function generateLargeDataset(itemCount: number) {
     const laneId = lanes[i % lanes.length].id;
     
     if (i % 4 === 0) {
-      // Generate curve items (25%)
-      const dataPoints = Array.from({ length: 10 }, (_, j) => ({
-        time: new Date(time.getTime() + j * 60000), // 1 minute intervals
-        value: Math.sin(progress * Math.PI * 4 + j * 0.5) * 50 + 50 + Math.random() * 10,
-      }));
+      // Generate mathematical curve items (25%)
+      const curveStartTime = time;
+      const curveEndTime = new Date(time.getTime() + 600000); // 10 minutes
+      
+      // Vary the mathematical parameters for diversity
+      const amplitude = 20 + Math.random() * 30; // 20-50
+      const frequency = 0.5 + Math.random() * 3; // 0.5-3.5 cycles
+      const phase = Math.random() * 2 * Math.PI; // Random phase
+      const offset = 30 + Math.random() * 40; // 30-70 offset
+      const mathType = Math.random() > 0.5 ? 'sin' : 'cos';
+      
+      const dataPoints = generateMathCurve(
+        curveStartTime,
+        curveEndTime,
+        15, // points per curve
+        amplitude,
+        frequency,
+        phase,
+        offset,
+        mathType
+      );
       
       items.push({
         id: `curve-${i}`,
