@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerTimeline Examples</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin: 0 0 16px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            margin: 0;
+        }
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .example-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .example-card:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
+        }
+        .example-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .example-card:hover::before {
+            transform: scaleX(1);
+        }
+        .example-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: #333;
+        }
+        .example-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .example-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+        .example-features li {
+            padding: 4px 0;
+            color: #555;
+            position: relative;
+            padding-left: 20px;
+        }
+        .example-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .example-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        .quick-start {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        .quick-start h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .command {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .command:hover {
+            background: #4a5568;
+        }
+        .command::after {
+            content: 'Click to copy';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .command:hover::after {
+            opacity: 1;
+        }
+        .storybook-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .storybook-section h2 {
+            margin: 0 0 16px 0;
+        }
+        .storybook-section p {
+            margin: 0 0 24px 0;
+            opacity: 0.9;
+        }
+        .btn-storybook {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn-storybook:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PowerTimeline Examples</h1>
+            <p>Interactive examples showcasing the PowerTimeline React component</p>
+        </div>
+
+        <div class="examples-grid">
+            <div class="example-card">
+                <h3 class="example-title">Basic Timeline</h3>
+                <p class="example-description">
+                    A simple timeline demonstrating core features with sample data including curves, events, and time ranges.
+                </p>
+                <ul class="example-features">
+                    <li>Basic component setup</li>
+                    <li>Sample data visualization</li>
+                    <li>Pan and zoom interactions</li>
+                    <li>Item click handlers</li>
+                </ul>
+                <div class="example-actions">
+                    <a href="./basic-timeline/" class="btn btn-primary">View Example</a>
+                    <a href="https://github.com/powertimeline/react/tree/main/examples/basic-timeline" class="btn btn-secondary">Source Code</a>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3 class="example-title">Large Dataset Performance</h3>
+                <p class="example-description">
+                    Performance demonstration with large datasets (10k+ items) showcasing virtualization and optimization techniques.
+                </p>
+                <ul class="example-features">
+                    <li>10,000+ data points</li>
+                    <li>Virtualization controls</li>
+                    <li>Performance monitoring</li>
+                    <li>Memory usage tracking</li>
+                </ul>
+                <div class="example-actions">
+                    <a href="./large-dataset/" class="btn btn-primary">View Example</a>
+                    <a href="https://github.com/powertimeline/react/tree/main/examples/large-dataset" class="btn btn-secondary">Source Code</a>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3 class="example-title">Accessibility Demo</h3>
+                <p class="example-description">
+                    Comprehensive accessibility features including keyboard navigation, screen reader support, and WCAG compliance.
+                </p>
+                <ul class="example-features">
+                    <li>Keyboard navigation</li>
+                    <li>Screen reader support</li>
+                    <li>ARIA labels and roles</li>
+                    <li>Focus management</li>
+                </ul>
+                <div class="example-actions">
+                    <a href="./accessibility-demo/" class="btn btn-primary">View Example</a>
+                    <a href="https://github.com/powertimeline/react/tree/main/examples/accessibility-demo" class="btn btn-secondary">Source Code</a>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3 class="example-title">Custom Styling</h3>
+                <p class="example-description">
+                    Advanced styling options including themes, custom colors, fonts, and responsive design patterns.
+                </p>
+                <ul class="example-features">
+                    <li>Custom themes</li>
+                    <li>CSS-in-JS styling</li>
+                    <li>Responsive layouts</li>
+                    <li>Animation effects</li>
+                </ul>
+                <div class="example-actions">
+                    <a href="./custom-styling/" class="btn btn-primary">View Example</a>
+                    <a href="https://github.com/powertimeline/react/tree/main/examples/custom-styling" class="btn btn-secondary">Source Code</a>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3 class="example-title">Interactive Features</h3>
+                <p class="example-description">
+                    Advanced interactions including item selection, tooltips, context menus, and dynamic data updates.
+                </p>
+                <ul class="example-features">
+                    <li>Item selection</li>
+                    <li>Custom tooltips</li>
+                    <li>Context menus</li>
+                    <li>Real-time updates</li>
+                </ul>
+                <div class="example-actions">
+                    <a href="./interactive-features/" class="btn btn-primary">View Example</a>
+                    <a href="https://github.com/powertimeline/react/tree/main/examples/interactive-features" class="btn btn-secondary">Source Code</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h2>Quick Start Commands</h2>
+            <p>Run these commands in your terminal to start any example with hot reloading:</p>
+            <div class="command-grid">
+                <div class="command" onclick="copyToClipboard('npm run examples:basic')">npm run examples:basic</div>
+                <div class="command" onclick="copyToClipboard('npm run examples:large')">npm run examples:large</div>
+                <div class="command" onclick="copyToClipboard('npm run examples:accessibility')">npm run examples:accessibility</div>
+                <div class="command" onclick="copyToClipboard('npm run examples:styling')">npm run examples:styling</div>
+                <div class="command" onclick="copyToClipboard('npm run examples:interactive')">npm run examples:interactive</div>
+                <div class="command" onclick="copyToClipboard('npm run examples')">npm run examples</div>
+            </div>
+        </div>
+
+        <div class="storybook-section">
+            <h2>🎨 Storybook</h2>
+            <p>Explore all components interactively with Storybook - perfect for development and testing</p>
+            <a href="#" onclick="openStorybook()" class="btn btn-storybook">Launch Storybook</a>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show a temporary success message
+                const event = new CustomEvent('copied', { detail: text });
+                document.dispatchEvent(event);
+            });
+        }
+
+        function openStorybook() {
+            // In a real environment, this would open Storybook
+            alert('Run "npm run storybook" in your terminal to launch Storybook');
+        }
+
+        // Add copy feedback
+        document.addEventListener('copied', (e) => {
+            const commands = document.querySelectorAll('.command');
+            commands.forEach(cmd => {
+                if (cmd.textContent === e.detail) {
+                    const originalText = cmd.textContent;
+                    cmd.textContent = 'Copied!';
+                    cmd.style.background = '#28a745';
+                    setTimeout(() => {
+                        cmd.textContent = originalText;
+                        cmd.style.background = '#2d3748';
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

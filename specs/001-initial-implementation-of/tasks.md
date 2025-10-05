@@ -94,10 +94,10 @@
 - [x] T055 [P] Interactive features example in `examples/interactive-features/`
 
 ### Storybook Stories
-- [ ] T056 [P] PowerTimeline Storybook stories in `stories/PowerTimeline.stories.tsx`
-- [ ] T057 [P] Lane Storybook stories in `stories/Lane.stories.tsx`
-- [ ] T058 [P] Item components Storybook stories in `stories/Items.stories.tsx`
-- [ ] T059 [P] Accessibility Storybook stories in `stories/accessibility/Accessibility.stories.tsx`
+- [x] T056 [P] PowerTimeline Storybook stories in `stories/PowerTimeline.stories.tsx`
+- [x] T057 [P] Lane Storybook stories in `stories/Lane.stories.tsx`
+- [x] T058 [P] Item components Storybook stories in `stories/Items.stories.tsx`
+- [x] T059 [P] Accessibility Storybook stories in `stories/accessibility/Accessibility.stories.tsx`
 
 ### Visual Regression Tests
 - [ ] T060 [P] Visual regression tests for basic rendering in `tests/visual/basic-rendering.spec.ts`

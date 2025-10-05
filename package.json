@@ -30,6 +30,12 @@
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "examples": "node scripts/examples-server.js",
+    "examples:basic": "npm run examples basic-timeline",
+    "examples:large": "npm run examples large-dataset",
+    "examples:accessibility": "npm run examples accessibility-demo",
+    "examples:styling": "npm run examples custom-styling",
+    "examples:interactive": "npm run examples interactive-features",
     "prepare": "husky install"
   },
   "keywords": [

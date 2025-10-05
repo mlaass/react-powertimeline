@@ -38,22 +38,22 @@ describe('Virtualization Utilities', () => {
     it('should group items by lane ID', () => {
       const grouped = groupItemsByLane(testItems);
       
-      expect(grouped['lane-1']).toHaveLength(2);
-      expect(grouped['lane-2']).toHaveLength(1);
-      expect(grouped['lane-1'][0].id).toBe('event-1');
-      expect(grouped['lane-1'][1].id).toBe('range-1');
-      expect(grouped['lane-2'][0].id).toBe('event-2');
+      expect(grouped.get('lane-1')).toHaveLength(2);
+      expect(grouped.get('lane-2')).toHaveLength(1);
+      expect(grouped.get('lane-1')![0].id).toBe('event-1');
+      expect(grouped.get('lane-1')![1].id).toBe('range-1');
+      expect(grouped.get('lane-2')![0].id).toBe('event-2');
     });
 
     it('should handle empty items array', () => {
       const grouped = groupItemsByLane([]);
-      expect(Object.keys(grouped)).toHaveLength(0);
+      expect(grouped.size).toBe(0);
     });
 
     it('should handle single item', () => {
       const grouped = groupItemsByLane([testItems[0]]);
-      expect(Object.keys(grouped)).toHaveLength(1);
-      expect(grouped['lane-1']).toHaveLength(1);
+      expect(grouped.size).toBe(1);
+      expect(grouped.get('lane-1')).toHaveLength(1);
     });
   });
 });
