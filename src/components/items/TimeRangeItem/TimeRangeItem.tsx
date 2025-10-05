@@ -59,6 +59,7 @@ export const TimeRangeItem: React.FC<TimeRangeItemProps> = ({
     return generateItemAriaLabel({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata });
   }, [id, type, laneId, startTime, endTime, style, stackLevel, label, metadata]);
 
+
   if (!timeScale || width <= 0) {
     return null;
   }
@@ -72,7 +73,10 @@ export const TimeRangeItem: React.FC<TimeRangeItemProps> = ({
       aria-label={ariaLabel}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
-      style={{ cursor: onItemClick ? 'pointer' : 'default' }}
+      style={{ 
+        cursor: onItemClick ? 'pointer' : 'default',
+        outline: 'none'
+      }}
       className={`time-range-item ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}
     >
       {/* Main rectangle */}
@@ -82,12 +86,20 @@ export const TimeRangeItem: React.FC<TimeRangeItemProps> = ({
         width={width}
         height={height}
         fill={style.backgroundColor}
-        stroke={style.borderColor}
-        strokeWidth={style.borderWidth || 1}
-        opacity={style.opacity || 0.7}
+        stroke={style.borderColor || style.backgroundColor}
+        strokeWidth={isSelected ? (style.borderWidth || 1) + 2 : (isHovered ? (style.borderWidth || 1) + 1 : (style.borderWidth || 1))}
+        opacity={isSelected ? 0.95 : (isHovered ? 0.85 : (style.opacity || 0.7))}
         rx={style.borderRadius || 2}
         ry={style.borderRadius || 2}
         className="time-range-rect"
+        style={{
+          transition: 'all 0.2s ease-in-out',
+          filter: isSelected 
+            ? 'drop-shadow(0 3px 12px rgba(0, 0, 0, 0.4)) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.3))'
+            : isHovered 
+              ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2))'
+              : 'none'
+        }}
       />
       
       {/* Label */}
@@ -119,22 +131,6 @@ export const TimeRangeItem: React.FC<TimeRangeItemProps> = ({
         </text>
       )}
       
-      {/* Selection/hover indicator */}
-      {(isSelected || isHovered) && (
-        <rect
-          x={x - 2}
-          y={y - 2}
-          width={width + 4}
-          height={height + 4}
-          fill="none"
-          stroke={isSelected ? '#007bff' : '#6c757d'}
-          strokeWidth={2}
-          strokeDasharray="3,3"
-          rx={(style.borderRadius || 2) + 2}
-          ry={(style.borderRadius || 2) + 2}
-          className="time-range-indicator"
-        />
-      )}
       
       {/* Resize handles for interactive items */}
       {onItemClick && (isSelected || isHovered) && width > 20 && (

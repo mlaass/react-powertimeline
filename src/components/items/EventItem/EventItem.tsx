@@ -48,13 +48,26 @@ export const EventItem: React.FC<EventItemProps> = ({
 
   // Render marker based on type
   const renderMarker = () => {
-    const size = style.size || 8;
-    const strokeWidth = style.strokeWidth || 2;
+    const size = isSelected ? (style.size || 8) + 2 : (isHovered ? (style.size || 8) + 1 : (style.size || 8));
+    const strokeWidth = isSelected ? (style.strokeWidth || 2) + 1 : (isHovered ? (style.strokeWidth || 2) + 0.5 : (style.strokeWidth || 2));
+    
+    // Enhanced drop shadow for selected state
+    const dropShadow = isSelected 
+      ? 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.2))'
+      : isHovered 
+        ? 'drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2))'
+        : 'none';
+    
     const commonProps = {
       fill: style.color,
       stroke: style.color,
       strokeWidth,
+      opacity: isSelected ? 1 : (isHovered ? 0.9 : 1),
       className: 'event-marker',
+      style: {
+        transition: 'all 0.2s ease-in-out',
+        filter: dropShadow
+      }
     };
 
     switch (style.markerType) {
@@ -68,6 +81,10 @@ export const EventItem: React.FC<EventItemProps> = ({
             stroke={style.color}
             strokeWidth={strokeWidth}
             className="event-marker"
+            style={{
+              transition: 'all 0.2s ease-in-out',
+              filter: dropShadow
+            }}
           />
         );
 
@@ -147,7 +164,10 @@ export const EventItem: React.FC<EventItemProps> = ({
       aria-label={ariaLabel}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
-      style={{ cursor: onItemClick ? 'pointer' : 'default' }}
+      style={{ 
+        cursor: onItemClick ? 'pointer' : 'default',
+        outline: 'none'
+      }}
       className={`event-item ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}
       transform={`translate(0, 0)`}
     >
@@ -168,20 +188,6 @@ export const EventItem: React.FC<EventItemProps> = ({
         </text>
       )}
       
-      {/* Hover/selection indicator */}
-      {(isSelected || isHovered) && (
-        <circle
-          cx={x}
-          cy={y}
-          r={(style.size || 8) + 2}
-          fill="none"
-          stroke={isSelected ? '#007bff' : '#6c757d'}
-          strokeWidth={1.5}
-          strokeDasharray="3,2"
-          className="event-indicator"
-          opacity={0.8}
-        />
-      )}
     </g>
   );
 };

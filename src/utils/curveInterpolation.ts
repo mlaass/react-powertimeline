@@ -116,3 +116,58 @@ export function getCurveValueAtPixel(
     time: targetTime
   };
 }
+
+/**
+ * Finds the curve with the highest visual position (lowest Y coordinate) at a specific pixel position
+ */
+export function findHighestCurveAtPixel(
+  curves: Array<{
+    id: string | number;
+    dataPoints: DataPoint[];
+    interpolation?: 'linear' | 'step' | 'basis' | 'cardinal';
+  }>,
+  pixelX: number,
+  timeScale: { scale: any },
+  laneHeight: number = 100
+): { curveId: string | number; value: number; time: Date; yPosition: number } | null {
+  if (curves.length === 0) return null;
+  
+  const targetTime = pixelToTimeFromScale(pixelX, timeScale);
+  let highestCurve: { curveId: string | number; value: number; time: Date; yPosition: number } | null = null;
+  
+  for (const curve of curves) {
+    const value = interpolateCurveValue(
+      curve.dataPoints, 
+      targetTime, 
+      curve.interpolation || 'linear'
+    );
+    
+    if (value !== null) {
+      // Convert data value to Y position using the same logic as CurveItem
+      const values = curve.dataPoints.map(d => d.value);
+      const minValue = Math.min(...values);
+      const maxValue = Math.max(...values);
+      const valueRange = maxValue - minValue;
+      
+      let yPosition: number;
+      if (valueRange > 0) {
+        const normalizedValue = (value - minValue) / valueRange;
+        yPosition = laneHeight - (normalizedValue * laneHeight * 0.8) - (laneHeight * 0.1);
+      } else {
+        yPosition = laneHeight / 2;
+      }
+      
+      // Find curve with lowest Y position (highest on screen)
+      if (!highestCurve || yPosition < highestCurve.yPosition) {
+        highestCurve = {
+          curveId: curve.id,
+          value,
+          time: targetTime,
+          yPosition
+        };
+      }
+    }
+  }
+  
+  return highestCurve;
+}

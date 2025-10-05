@@ -1,6 +1,6 @@
 /**
  * Basic Timeline Example
- * 
+ *
  * Demonstrates basic usage of PowerTimeline with simple data.
  */
 
@@ -22,19 +22,19 @@ function generateMathCurve(
 ) {
   const timeSpan = endTime.getTime() - startTime.getTime();
   const dataPoints: { time: Date; value: number }[] = [];
-  
+
   for (let i = 0; i < points; i++) {
     const progress = i / (points - 1);
     const time = new Date(startTime.getTime() + progress * timeSpan);
-    
+
     // Calculate the mathematical function value
     const x = progress * frequency * 2 * Math.PI + phase;
     const rawValue = type === 'sin' ? Math.sin(x) : Math.cos(x);
     const value = amplitude * rawValue + offset;
-    
+
     dataPoints.push({ time, value });
   }
-  
+
   return dataPoints;
 }
 
@@ -207,7 +207,6 @@ function BasicTimelineExample() {
 
   const handleViewChange = (newTimeRange: TimeRange) => {
     setCurrentTimeRange(newTimeRange);
-    console.log('View changed:', newTimeRange);
   };
 
   const handleItemClick = (item: any, event: React.MouseEvent) => {
@@ -216,7 +215,7 @@ function BasicTimelineExample() {
   };
 
   const handleItemHover = (item: any, event: React.MouseEvent) => {
-    console.log('Item hovered:', item);
+    //console.log('Item hovered:', item);
   };
 
   return (
@@ -232,7 +231,7 @@ function BasicTimelineExample() {
         height={300}
         ariaLabel="Basic system timeline showing events, metrics, and deployments"
       />
-      
+
       {selectedItem && (
         <div style={{
           marginTop: '16px',

@@ -1,6 +1,6 @@
 /**
  * CurveItem Component
- * 
+ *
  * Renders time-series data as connected line segments with optional fill areas.
  * Supports different interpolation methods and handles large datasets efficiently.
  */
@@ -10,6 +10,7 @@ import { line as d3Line, area as d3Area, curveLinear, curveStep, curveBasis, cur
 import type { CurveItemProps } from '../types';
 import { generateItemAriaLabel } from '../../../utils/accessibility';
 import { getCurveValueAtPixel } from '../../../utils/curveInterpolation';
+import { darkenColor, createDropShadow } from '../../../utils/colorUtils';
 
 
 const interpolationMap = {
@@ -43,7 +44,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
     }
 
     const curve = interpolationMap[interpolation];
-    
+
     // Create a default Y-scale if none provided
     let effectiveYScale = yScale;
     if (!effectiveYScale) {
@@ -51,7 +52,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       const values = dataPoints.map(d => d.value);
       const minValue = Math.min(...values);
       const maxValue = Math.max(...values);
-      
+
       // Create a linear scale that maps data values to lane height (inverted)
       const valueRange = maxValue - minValue;
       if (valueRange > 0) {
@@ -63,7 +64,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
         effectiveYScale = () => laneHeight / 2;
       }
     }
-    
+
     // Create line generator
     const lineGenerator = d3Line<typeof dataPoints[0]>()
       .x(d => timeScale.scale(d.time))
@@ -83,52 +84,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
     };
   }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style.fillColor]);
 
-  // Handle interactions
-  const handleClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    onItemClick?.({ id, type, laneId, dataPoints, style, interpolation, label, metadata }, event);
-  };
-
-  const handleMouseEnter = (event: React.MouseEvent) => {
-    onItemHover?.({ id, type, laneId, dataPoints, style, interpolation, label, metadata }, event);
-  };
-
-  const handleMouseMove = (event: React.MouseEvent) => {
-    // Get interpolated value at mouse position
-    if (timeScale && dataPoints.length > 0) {
-      const rect = (event.currentTarget as SVGElement).getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      
-      // Get interpolated value at the exact mouse position
-      const interpolatedData = getCurveValueAtPixel(
-        dataPoints,
-        mouseX,
-        timeScale,
-        interpolation
-      );
-      
-      if (interpolatedData) {
-        // Create a custom event with the interpolated data
-        const customEvent = {
-          ...event,
-          clientX: event.clientX,
-          clientY: event.clientY,
-          interpolatedValue: interpolatedData.value,
-          interpolatedTime: interpolatedData.time,
-          mouseX: mouseX
-        };
-        
-        onItemHover?.({ 
-          id, type, laneId, dataPoints, style, interpolation, label, metadata 
-        }, customEvent as any);
-      } else {
-        // Fallback to regular hover
-        onItemHover?.({ 
-          id, type, laneId, dataPoints, style, interpolation, label, metadata 
-        }, event);
-      }
-    }
-  };
+  // Note: Mouse interactions are now handled at the lane level
 
   // Generate accessibility label
   const ariaLabel = useMemo(() => {
@@ -146,12 +102,9 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       role="button"
       tabIndex={0}
       aria-label={ariaLabel}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      style={{ 
-        cursor: onItemClick ? 'pointer' : 'default',
-        outline: 'none'
+      style={{
+        outline: 'none',
+        pointerEvents: 'none'
       }}
       className={`curve-item ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}
     >
@@ -164,14 +117,11 @@ export const CurveItem: React.FC<CurveItemProps> = ({
           className="curve-fill"
           style={{
             transition: 'all 0.2s ease-in-out',
-            cursor: onItemClick ? 'pointer' : 'default'
+            pointerEvents: 'none'
           }}
-          onClick={handleClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseMove={handleMouseMove}
         />
       )}
-      
+
       {/* Line path */}
       <path
         d={linePath}
@@ -182,13 +132,10 @@ export const CurveItem: React.FC<CurveItemProps> = ({
         className="curve-line"
         style={{
           transition: 'all 0.2s ease-in-out',
-          cursor: onItemClick ? 'pointer' : 'default'
+          pointerEvents: 'none'
         }}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
       />
-      
+
       {/* Data points (optional, for interaction) */}
       {dataPoints.map((point, index) => {
         // Recreate the effective Y-scale for consistency
@@ -207,7 +154,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
             effectiveYScale = () => laneHeight / 2;
           }
         }
-        
+
         return (
           <circle
             key={index}
@@ -217,13 +164,13 @@ export const CurveItem: React.FC<CurveItemProps> = ({
             fill={style.strokeColor}
             opacity={0}
             className="curve-point"
-            style={{ 
+            style={{
               cursor: onItemClick ? 'pointer' : 'default'
             }}
           />
         );
       })}
-      
+
       {/* Label */}
       {label && (
         <text
