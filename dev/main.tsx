@@ -8,6 +8,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { PowerTimeline } from '../src';
+import { Tooltip } from '../src/components/Tooltip';
+import { Cursor } from '../src/components/Cursor';
+import '../src/components/Tooltip/Tooltip.css';
 import type { TimeRange } from '../src';
 import type { Lane, CurveItem, EventItem, TimeRangeItem } from '../src/types';
 
@@ -278,19 +281,68 @@ const initialTimeRange: TimeRange = {
 function App() {
   const [selectedItem, setSelectedItem] = React.useState<any>(null);
   const [hoveredItem, setHoveredItem] = React.useState<any>(null);
+  const [tooltip, setTooltip] = React.useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    item: any;
+    context?: any;
+  }>({
+    visible: false,
+    x: 0,
+    y: 0,
+    item: null,
+  });
+  
+  const [cursor, setCursor] = React.useState<{
+    visible: boolean;
+    x: number;
+  }>({
+    visible: false,
+    x: 0,
+  });
 
   const handleViewChange = (newTimeRange: TimeRange) => {
-    console.log('View changed:', newTimeRange);
+    // Handle view changes
   };
 
   const handleItemClick = (item: any, event: React.MouseEvent) => {
-    console.log('Item clicked:', item);
     setSelectedItem(item);
   };
 
-  const handleItemHover = (item: any, event: React.MouseEvent) => {
-    console.log('Item hovered:', item);
+  const handleItemHover = (item: any, event: any) => {
     setHoveredItem(item);
+    
+    // Extract interpolated data if available
+    const context: any = {};
+    if (event.interpolatedValue !== undefined) {
+      context.value = event.interpolatedValue;
+      context.timestamp = event.interpolatedTime;
+      context.isInterpolated = true;
+    }
+    
+    // Show tooltip
+    setTooltip({
+      visible: true,
+      x: event.clientX,
+      y: event.clientY,
+      item: item,
+      context: context
+    });
+    
+    // Show cursor for curves
+    if (item.type === 'curve' && event.mouseX !== undefined) {
+      setCursor({
+        visible: true,
+        x: event.mouseX
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredItem(null);
+    setTooltip(prev => ({ ...prev, visible: false }));
+    setCursor(prev => ({ ...prev, visible: false }));
   };
 
   return (
@@ -298,7 +350,10 @@ function App() {
       <h1>PowerTimeline Development</h1>
       <p>This is a development environment for the PowerTimeline component.</p>
       
-      <div style={{ marginTop: '20px', border: '1px solid #ccc' }}>
+      <div 
+        style={{ marginTop: '20px', border: '1px solid #ccc', position: 'relative' }}
+        onMouseLeave={handleMouseLeave}
+      >
         <PowerTimeline
           lanes={lanes}
           items={items}
@@ -310,6 +365,42 @@ function App() {
           height={300}
           bufferZone={0.5}
           ariaLabel="System performance timeline"
+        />
+        
+        {/* Vertical Cursor */}
+        {cursor.visible && (
+          <svg
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '800px',
+              height: '300px',
+              pointerEvents: 'none',
+              zIndex: 10
+            }}
+          >
+            <Cursor
+              visible={cursor.visible}
+              x={cursor.x}
+              height={300}
+              style={{
+                color: '#007bff',
+                width: 1,
+                opacity: 0.8,
+                dashArray: '3,3'
+              }}
+            />
+          </svg>
+        )}
+        
+        {/* Tooltip */}
+        <Tooltip
+          visible={tooltip.visible}
+          x={tooltip.x}
+          y={tooltip.y}
+          item={tooltip.item}
+          context={tooltip.context}
         />
       </div>
       

@@ -162,7 +162,6 @@ export const EventItem: React.FC<EventItemProps> = ({
           textAnchor="middle"
           fontSize={label.style?.fontSize || 12}
           fill={label.style?.color || '#333'}
-          backgroundColor={label.style?.backgroundColor}
           className="event-label"
         >
           {label.text}

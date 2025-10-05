@@ -1,27 +1,27 @@
 /**
  * PowerTimeline React Component Library
  * 
- * Main entry point for the PowerTimeline component library.
  * Exports all public components, types, and utilities.
  */
 
 // Main component
 export { PowerTimeline as default } from './components/PowerTimeline';
 export { PowerTimeline } from './components/PowerTimeline';
-
-// Sub-components (for advanced usage)
 export { Lane } from './components/Lane';
 export { TimelineAxis } from './components/TimelineAxis';
 export { CurveItem } from './components/items/CurveItem';
 export { EventItem } from './components/items/EventItem';
 export { TimeRangeItem } from './components/items/TimeRangeItem';
-export { ErrorBoundary } from './components/ErrorBoundary';
+export { Tooltip } from './components/Tooltip';
+export { Cursor } from './components/Cursor';
+
+// Export types
+export type * from './types';
 
 // Hooks (for custom implementations)
 export { useTimeScale } from './hooks/useTimeScale';
 export { useVirtualization } from './hooks/useVirtualization';
 export { useD3Zoom } from './hooks/useD3Zoom';
-
 // Utilities (for advanced usage)
 export * from './utils/timeScale';
 export * from './utils/virtualization';

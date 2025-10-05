@@ -36,7 +36,6 @@ export const Lane: React.FC<LaneProps> = ({
   // Render individual items
   const renderItem = (item: any, index: number) => {
     const commonProps = {
-      key: `${item.id}-${index}`,
       timeScale,
       laneHeight: height,
       onItemClick,
@@ -45,14 +44,14 @@ export const Lane: React.FC<LaneProps> = ({
 
     switch (item.type) {
       case 'curve':
-        return <CurveItem {...item} {...commonProps} />;
+        return <CurveItem key={item.id} {...item} {...commonProps} />;
       
       case 'event':
-        return <EventItem {...item} {...commonProps} />;
+        return <EventItem key={item.id} {...item} {...commonProps} />;
       
       case 'time-range':
         const stackLevel = stackLevels.get(item.id) || 0;
-        return <TimeRangeItem {...item} {...commonProps} stackLevel={stackLevel} />;
+        return <TimeRangeItem key={item.id} {...item} {...commonProps} stackLevel={stackLevel} />;
       
       default:
         return null;

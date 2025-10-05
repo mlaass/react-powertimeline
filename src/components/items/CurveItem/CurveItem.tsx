@@ -9,6 +9,8 @@ import React, { useMemo } from 'react';
 import { line as d3Line, area as d3Area, curveLinear, curveStep, curveBasis, curveCardinal } from 'd3-shape';
 import type { CurveItemProps } from '../types';
 import { generateItemAriaLabel } from '../../../utils/accessibility';
+import { getCurveValueAtPixel } from '../../../utils/curveInterpolation';
+
 
 const interpolationMap = {
   linear: curveLinear,
@@ -91,6 +93,43 @@ export const CurveItem: React.FC<CurveItemProps> = ({
     onItemHover?.({ id, type, laneId, dataPoints, style, interpolation, label, metadata }, event);
   };
 
+  const handleMouseMove = (event: React.MouseEvent) => {
+    // Get interpolated value at mouse position
+    if (timeScale && dataPoints.length > 0) {
+      const rect = (event.currentTarget as SVGElement).getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      
+      // Get interpolated value at the exact mouse position
+      const interpolatedData = getCurveValueAtPixel(
+        dataPoints,
+        mouseX,
+        timeScale,
+        interpolation
+      );
+      
+      if (interpolatedData) {
+        // Create a custom event with the interpolated data
+        const customEvent = {
+          ...event,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          interpolatedValue: interpolatedData.value,
+          interpolatedTime: interpolatedData.time,
+          mouseX: mouseX
+        };
+        
+        onItemHover?.({ 
+          id, type, laneId, dataPoints, style, interpolation, label, metadata 
+        }, customEvent as any);
+      } else {
+        // Fallback to regular hover
+        onItemHover?.({ 
+          id, type, laneId, dataPoints, style, interpolation, label, metadata 
+        }, event);
+      }
+    }
+  };
+
   // Generate accessibility label
   const ariaLabel = useMemo(() => {
     return generateItemAriaLabel({ id, type, laneId, dataPoints, style, interpolation, label, metadata });
@@ -109,6 +148,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       aria-label={ariaLabel}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
       style={{ cursor: onItemClick ? 'pointer' : 'default' }}
       className={`curve-item ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}
     >
@@ -116,9 +156,12 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       {style.fillColor && areaPath && (
         <path
           d={areaPath}
-          fill={style.fillColor}
-          opacity={style.opacity || 1}
+          fill={isSelected ? 'rgba(0, 123, 255, 0.3)' : (isHovered ? style.fillColor : style.fillColor)}
+          opacity={isSelected ? 0.4 : (isHovered ? (style.opacity || 1) * 1.2 : (style.opacity || 1))}
           className="curve-fill"
+          style={{
+            transition: 'all 0.2s ease-in-out'
+          }}
         />
       )}
       
@@ -126,10 +169,14 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       <path
         d={linePath}
         fill="none"
-        stroke={style.strokeColor}
-        strokeWidth={style.strokeWidth || 2}
-        opacity={style.opacity || 1}
+        stroke={isSelected ? '#007bff' : style.strokeColor}
+        strokeWidth={isSelected ? (style.strokeWidth || 2) + 2 : (isHovered ? (style.strokeWidth || 2) + 1 : (style.strokeWidth || 2))}
+        opacity={isSelected ? 1 : (isHovered ? 0.9 : (style.opacity || 1))}
         className="curve-line"
+        style={{
+          filter: isSelected ? 'drop-shadow(0 0 4px rgba(0, 123, 255, 0.5))' : (isHovered ? 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.3))' : 'none'),
+          transition: 'all 0.2s ease-in-out'
+        }}
       />
       
       {/* Data points (optional, for interaction) */}
@@ -156,11 +203,14 @@ export const CurveItem: React.FC<CurveItemProps> = ({
             key={index}
             cx={timeScale.scale(point.time)}
             cy={effectiveYScale(point.value)}
-            r={2}
-            fill={style.strokeColor}
-            opacity={0}
+            r={isSelected ? 3 : (isHovered ? 2.5 : 2)}
+            fill={isSelected ? '#007bff' : (isHovered ? style.strokeColor : style.strokeColor)}
+            opacity={isSelected ? 0.8 : (isHovered ? 0.6 : 0)}
             className="curve-point"
-            style={{ cursor: onItemClick ? 'pointer' : 'default' }}
+            style={{ 
+              cursor: onItemClick ? 'pointer' : 'default',
+              transition: 'all 0.2s ease-in-out'
+            }}
           />
         );
       })}
