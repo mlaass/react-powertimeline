@@ -125,7 +125,7 @@ describe('CurveItem Contract', () => {
     expect(path).toHaveAttribute('fill', 'rgba(0, 123, 255, 0.1)');
   });
 
-  it('should handle click events', () => {
+  it('should disable pointer events for lane-level interaction', () => {
     const onItemClick = vi.fn();
     const { container } = render(
       <svg>
@@ -133,9 +133,9 @@ describe('CurveItem Contract', () => {
       </svg>
     );
 
-    const path = container.querySelector('path');
-    expect(path).toBeTruthy();
-    expect(path).toHaveAttribute('style', expect.stringContaining('cursor: pointer'));
+    const curveGroup = container.querySelector('g[data-testid="curve-item"]');
+    expect(curveGroup).toBeTruthy();
+    expect(curveGroup).toHaveStyle({ pointerEvents: 'none' });
   });
 
   it('should validate data points are sorted by time', () => {
