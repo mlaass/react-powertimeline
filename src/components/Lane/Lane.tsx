@@ -134,8 +134,17 @@ export const Lane: React.FC<LaneProps> = ({
           opacity={0.3}
         />
 
-        {/* Render items */}
-        {items.map(renderItem)}
+        {/* Render items - selected curves last (on top) */}
+        {items
+          .sort((a, b) => {
+            // Sort so selected curves render last (appear on top)
+            const aSelected = a.type === 'curve' && a.isSelected;
+            const bSelected = b.type === 'curve' && b.isSelected;
+            if (aSelected && !bSelected) return 1;
+            if (!aSelected && bSelected) return -1;
+            return 0;
+          })
+          .map(renderItem)}
       </svg>
 
       {/* Empty state message */}

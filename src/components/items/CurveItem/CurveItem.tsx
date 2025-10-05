@@ -149,19 +149,26 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
-      style={{ cursor: onItemClick ? 'pointer' : 'default' }}
+      style={{ 
+        cursor: onItemClick ? 'pointer' : 'default',
+        outline: 'none'
+      }}
       className={`curve-item ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}
     >
       {/* Fill area */}
       {style.fillColor && areaPath && (
         <path
           d={areaPath}
-          fill={isSelected ? 'rgba(0, 123, 255, 0.3)' : (isHovered ? style.fillColor : style.fillColor)}
-          opacity={isSelected ? 0.4 : (isHovered ? (style.opacity || 1) * 1.2 : (style.opacity || 1))}
+          fill={style.fillColor}
+          opacity={isSelected ? 1.0 : (isHovered ? 1.0 : (style.opacity || 0.15))}
           className="curve-fill"
           style={{
-            transition: 'all 0.2s ease-in-out'
+            transition: 'all 0.2s ease-in-out',
+            cursor: onItemClick ? 'pointer' : 'default'
           }}
+          onClick={handleClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseMove={handleMouseMove}
         />
       )}
       
@@ -169,14 +176,17 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       <path
         d={linePath}
         fill="none"
-        stroke={isSelected ? '#007bff' : style.strokeColor}
+        stroke={style.strokeColor}
         strokeWidth={isSelected ? (style.strokeWidth || 2) + 2 : (isHovered ? (style.strokeWidth || 2) + 1 : (style.strokeWidth || 2))}
-        opacity={isSelected ? 1 : (isHovered ? 0.9 : (style.opacity || 1))}
+        opacity={1}
         className="curve-line"
         style={{
-          filter: isSelected ? 'drop-shadow(0 0 4px rgba(0, 123, 255, 0.5))' : (isHovered ? 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.3))' : 'none'),
-          transition: 'all 0.2s ease-in-out'
+          transition: 'all 0.2s ease-in-out',
+          cursor: onItemClick ? 'pointer' : 'default'
         }}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
       />
       
       {/* Data points (optional, for interaction) */}
@@ -203,13 +213,12 @@ export const CurveItem: React.FC<CurveItemProps> = ({
             key={index}
             cx={timeScale.scale(point.time)}
             cy={effectiveYScale(point.value)}
-            r={isSelected ? 3 : (isHovered ? 2.5 : 2)}
-            fill={isSelected ? '#007bff' : (isHovered ? style.strokeColor : style.strokeColor)}
-            opacity={isSelected ? 0.8 : (isHovered ? 0.6 : 0)}
+            r={2}
+            fill={style.strokeColor}
+            opacity={0}
             className="curve-point"
             style={{ 
-              cursor: onItemClick ? 'pointer' : 'default',
-              transition: 'all 0.2s ease-in-out'
+              cursor: onItemClick ? 'pointer' : 'default'
             }}
           />
         );

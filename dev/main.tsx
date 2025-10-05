@@ -9,7 +9,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { PowerTimeline } from '../src';
 import { Tooltip } from '../src/components/Tooltip';
-import { Cursor } from '../src/components/Cursor';
 import '../src/components/Tooltip/Tooltip.css';
 import type { TimeRange } from '../src';
 import type { Lane, CurveItem, EventItem, TimeRangeItem } from '../src/types';
@@ -294,13 +293,6 @@ function App() {
     item: null,
   });
   
-  const [cursor, setCursor] = React.useState<{
-    visible: boolean;
-    x: number;
-  }>({
-    visible: false,
-    x: 0,
-  });
 
   const handleViewChange = (newTimeRange: TimeRange) => {
     // Handle view changes
@@ -330,19 +322,11 @@ function App() {
       context: context
     });
     
-    // Show cursor for curves
-    if (item.type === 'curve' && event.mouseX !== undefined) {
-      setCursor({
-        visible: true,
-        x: event.mouseX
-      });
-    }
   };
 
   const handleMouseLeave = () => {
     setHoveredItem(null);
     setTooltip(prev => ({ ...prev, visible: false }));
-    setCursor(prev => ({ ...prev, visible: false }));
   };
 
   return (
@@ -366,33 +350,6 @@ function App() {
           bufferZone={0.5}
           ariaLabel="System performance timeline"
         />
-        
-        {/* Vertical Cursor */}
-        {cursor.visible && (
-          <svg
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '800px',
-              height: '300px',
-              pointerEvents: 'none',
-              zIndex: 10
-            }}
-          >
-            <Cursor
-              visible={cursor.visible}
-              x={cursor.x}
-              height={300}
-              style={{
-                color: '#007bff',
-                width: 1,
-                opacity: 0.8,
-                dashArray: '3,3'
-              }}
-            />
-          </svg>
-        )}
         
         {/* Tooltip */}
         <Tooltip

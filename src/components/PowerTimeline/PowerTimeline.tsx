@@ -10,6 +10,7 @@ import { select } from 'd3-selection';
 import type { PowerTimelineProps, PowerTimelineRef, TimeRange } from './PowerTimeline.types';
 import { Lane } from '../Lane';
 import { TimelineAxis } from '../TimelineAxis';
+import { Cursor } from '../Cursor';
 import { useTimeScale } from '../../hooks/useTimeScale';
 import { useVirtualizationWithPerformance } from '../../hooks/useVirtualization';
 import { useD3Zoom } from '../../hooks/useD3Zoom';
@@ -40,6 +41,10 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
   const [selectedItemId, setSelectedItemId] = useState<string | number | null>(null);
   const [focusManager, setFocusManager] = useState<FocusManager | null>(null);
   const [announcer, setAnnouncer] = useState<ScreenReaderAnnouncer | null>(null);
+  const [cursor, setCursor] = useState<{ visible: boolean; x: number }>({
+    visible: false,
+    x: 0,
+  });
 
   // Create time scale
   const timeScale = useTimeScale(currentTimeRange, [0, width]);
@@ -95,6 +100,25 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
   const handleItemHover = useCallback((item: any, event: React.MouseEvent) => {
     onItemHover?.(item, event);
   }, [onItemHover]);
+
+  // Handle timeline mouse interactions for cursor
+  const handleTimelineMouseMove = useCallback((event: React.MouseEvent) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      setCursor({
+        visible: true,
+        x: mouseX
+      });
+    }
+  }, []);
+
+  const handleTimelineMouseLeave = useCallback(() => {
+    setCursor({
+      visible: false,
+      x: 0
+    });
+  }, []);
 
   // Keyboard navigation
   const handleKeyDown = createKeyboardNavigationHandler({
@@ -251,9 +275,14 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
           height: `${totalHeight}px`,
           overflow: 'hidden',
         }}
+        onMouseMove={handleTimelineMouseMove}
+        onMouseLeave={handleTimelineMouseLeave}
       >
         {lanes.map((lane) => {
-          const laneItems = itemsByLane.get(lane.id) || [];
+          const laneItems = (itemsByLane.get(lane.id) || []).map(item => ({
+            ...item,
+            isSelected: selectedItemId === item.id
+          }));
           return (
             <Lane
               key={lane.id}
@@ -266,6 +295,33 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
             />
           );
         })}
+        
+        {/* Vertical cursor */}
+        {cursor.visible && (
+          <svg
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              zIndex: 10
+            }}
+          >
+            <Cursor
+              visible={cursor.visible}
+              x={cursor.x}
+              height={totalHeight}
+              style={{
+                color: '#007bff',
+                width: 1,
+                opacity: 0.8,
+                dashArray: '3,3'
+              }}
+            />
+          </svg>
+        )}
       </div>
 
       {/* Timeline axis */}
