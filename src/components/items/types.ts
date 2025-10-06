@@ -4,7 +4,7 @@
  * Re-exports and extends types for all item components (CurveItem, EventItem, TimeRangeItem).
  */
 
-export type {
+import type {
   Item,
   ItemLabel,
   LabelStyle,
@@ -19,6 +19,23 @@ export type {
   InterpolationType,
   LabelPosition,
 } from '../../types';
+
+// Re-export for consumers
+export type {
+  Item,
+  ItemLabel,
+  LabelStyle,
+  CurveItem,
+  DataPoint,
+  CurveStyle,
+  EventItem,
+  EventStyle,
+  TimeRangeItem,
+  TimeRangeStyle,
+  MarkerType,
+  InterpolationType,
+  LabelPosition,
+};
 
 // Base props for all item components
 export interface BaseItemProps {
