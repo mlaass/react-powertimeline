@@ -4,6 +4,7 @@ import { render } from '@testing-library/react';
 import { CurveItem } from '../../../src/components/items/CurveItem';
 import type { CurveItemProps } from '../../../src/components/items/types';
 import { scaleTime, scaleLinear } from 'd3-scale';
+import '@testing-library/jest-dom';
 
 /**
  * Contract Test for CurveItem Component
@@ -24,6 +25,7 @@ describe('CurveItem Contract', () => {
   const mockYScale = scaleLinear().domain([0, 100]).range([100, 0]);
 
   const defaultProps: CurveItemProps = {
+    // CurveItem properties
     id: 'test-curve',
     type: 'curve',
     laneId: 'test-lane',
@@ -36,6 +38,9 @@ describe('CurveItem Contract', () => {
       strokeColor: '#007bff',
       strokeWidth: 2,
     },
+    interpolation: 'linear',
+    
+    // BaseItemProps
     timeScale: mockTimeScale,
     laneHeight: 100,
     yScale: mockYScale,

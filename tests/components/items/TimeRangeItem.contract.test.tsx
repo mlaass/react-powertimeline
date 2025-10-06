@@ -180,9 +180,9 @@ describe('TimeRangeItem Contract', () => {
       </svg>
     );
 
-    const rect = container.querySelector('rect');
-    expect(rect).toBeTruthy();
-    expect(rect).toHaveAttribute('style', expect.stringContaining('cursor: pointer'));
+    const timeRangeGroup = container.querySelector('[data-testid="time-range-item"]');
+    expect(timeRangeGroup).toBeTruthy();
+    expect(timeRangeGroup).toHaveAttribute('style', expect.stringContaining('cursor: pointer'));
   });
 
   it('should validate that startTime is before endTime', () => {
