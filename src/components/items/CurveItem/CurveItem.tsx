@@ -9,7 +9,7 @@ import React, { useMemo } from 'react';
 import { line as d3Line, area as d3Area, curveLinear, curveStep, curveBasis, curveCardinal } from 'd3-shape';
 import type { CurveItemProps } from '../types';
 import { generateItemAriaLabel } from '../../../utils/accessibility';
-import { getCurveValueAtPixel } from '../../../utils/curveInterpolation';
+// import { getCurveValueAtPixel } from '../../../utils/curveInterpolation'; // Unused - lane handles interactions now
 import { darkenColor, createDropShadow } from '../../../utils/colorUtils';
 
 

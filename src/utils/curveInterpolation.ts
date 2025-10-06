@@ -17,7 +17,9 @@ export function interpolateCurveValue(
   targetTime: Date,
   interpolationType: 'linear' | 'step' | 'basis' | 'cardinal' = 'linear'
 ): number | null {
-  if (dataPoints.length === 0) return null;
+  if (dataPoints.length === 0) {
+    return null;
+  }
   if (dataPoints.length === 1) return dataPoints[0].value;
 
   const targetTimestamp = targetTime.getTime();
