@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Lane } from '../src/components/Lane';
 import type { Lane as LaneType, CurveItem, EventItem, TimeRangeItem, TimeRange } from '../src/types';
+import { scaleTime } from 'd3-scale';
 
 const meta: Meta<typeof Lane> = {
   title: 'Components/Lane',
   component: Lane,
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
     docs: {
       description: {
         component: 'Lane component represents a horizontal track in the timeline that contains items of the same category.',
@@ -14,17 +15,16 @@ const meta: Meta<typeof Lane> = {
     },
   },
   argTypes: {
-    width: {
-      control: { type: 'number', min: 200, max: 1000, step: 50 },
-      description: 'Width of the lane',
-    },
-    visibleTimeRange: {
-      control: false,
-      description: 'Currently visible time range',
-    },
     onItemClick: { action: 'item-clicked' },
     onItemHover: { action: 'item-hovered' },
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '800px', border: '1px solid #ddd' }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
@@ -41,6 +41,17 @@ const sampleLane: LaneType = {
 const visibleTimeRange: TimeRange = {
   start: new Date('2024-01-01T00:00:00Z'),
   end: new Date('2024-01-01T04:00:00Z'),
+};
+
+// Create a time scale for positioning items (800px wide)
+const createTimeScale = (width: number = 800) => {
+  return {
+    domain: [visibleTimeRange.start, visibleTimeRange.end] as [Date, Date],
+    range: [0, width] as [number, number],
+    scale: scaleTime()
+      .domain([visibleTimeRange.start, visibleTimeRange.end])
+      .range([0, width]),
+  };
 };
 
 const curveItems: CurveItem[] = [
@@ -119,88 +130,70 @@ const timeRangeItems: TimeRangeItem[] = [
 
 export const WithCurves: Story = {
   args: {
-    lane: sampleLane,
+    ...sampleLane,
     items: curveItems,
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const WithEvents: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      height: 60,
-      label: 'Events Lane',
-    },
+    ...sampleLane,
+    height: 60,
+    label: 'Events Lane',
     items: eventItems,
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const WithTimeRanges: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      height: 80,
-      label: 'Time Ranges Lane',
-    },
+    ...sampleLane,
+    height: 80,
+    label: 'Time Ranges Lane',
     items: timeRangeItems,
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const MixedItems: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      height: 120,
-      label: 'Mixed Items Lane',
-    },
+    ...sampleLane,
+    height: 120,
+    label: 'Mixed Items Lane',
     items: [...curveItems, ...eventItems, ...timeRangeItems],
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const EmptyLane: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      label: 'Empty Lane',
-    },
+    ...sampleLane,
+    label: 'Empty Lane',
     items: [],
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const CustomStyling: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      label: 'Custom Styled Lane',
-      style: {
-        backgroundColor: '#e3f2fd',
-        borderTop: '2px solid #1976d2',
-        borderBottom: '1px solid #bbdefb',
-      },
+    ...sampleLane,
+    label: 'Custom Styled Lane',
+    style: {
+      backgroundColor: '#e3f2fd',
+      borderTop: '2px solid #1976d2',
+      borderBottom: '1px solid #bbdefb',
     },
     items: curveItems,
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const TallLane: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      height: 200,
-      label: 'Tall Lane',
-    },
+    ...sampleLane,
+    height: 200,
+    label: 'Tall Lane',
     items: [
       ...curveItems,
       {
@@ -221,44 +214,44 @@ export const TallLane: Story = {
         label: { text: 'Memory Usage', position: 'bottom' },
       } as CurveItem,
     ],
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const ShortLane: Story = {
   args: {
-    lane: {
-      ...sampleLane,
-      height: 40,
-      label: 'Short Lane',
-    },
+    ...sampleLane,
+    height: 40,
+    label: 'Short Lane',
     items: eventItems,
-    visibleTimeRange,
-    width: 800,
+    timeScale: createTimeScale(800),
   },
 };
 
 export const NarrowTimeRange: Story = {
   args: {
-    lane: sampleLane,
+    ...sampleLane,
     items: [...curveItems, ...eventItems, ...timeRangeItems],
-    visibleTimeRange: {
-      start: new Date('2024-01-01T01:00:00Z'),
-      end: new Date('2024-01-01T02:00:00Z'),
+    timeScale: {
+      domain: [new Date('2024-01-01T01:00:00Z'), new Date('2024-01-01T02:00:00Z')] as [Date, Date],
+      range: [0, 800] as [number, number],
+      scale: scaleTime()
+        .domain([new Date('2024-01-01T01:00:00Z'), new Date('2024-01-01T02:00:00Z')])
+        .range([0, 800]),
     },
-    width: 800,
   },
 };
 
 export const WideTimeRange: Story = {
   args: {
-    lane: sampleLane,
+    ...sampleLane,
     items: [...curveItems, ...eventItems, ...timeRangeItems],
-    visibleTimeRange: {
-      start: new Date('2024-01-01T00:00:00Z'),
-      end: new Date('2024-01-01T08:00:00Z'),
+    timeScale: {
+      domain: [new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T08:00:00Z')] as [Date, Date],
+      range: [0, 800] as [number, number],
+      scale: scaleTime()
+        .domain([new Date('2024-01-01T00:00:00Z'), new Date('2024-01-01T08:00:00Z')])
+        .range([0, 800]),
     },
-    width: 800,
   },
 };

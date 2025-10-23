@@ -72,7 +72,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       .curve(curve);
 
     // Create area generator if fill is specified
-    const areaGenerator = style.fillColor ? d3Area<typeof dataPoints[0]>()
+    const areaGenerator = style?.fillColor ? d3Area<typeof dataPoints[0]>()
       .x(d => timeScale.scale(d.time))
       .y0(laneHeight)
       .y1(d => effectiveYScale(d.value))
@@ -82,7 +82,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       linePath: lineGenerator(dataPoints) || '',
       areaPath: areaGenerator ? (areaGenerator(dataPoints) || '') : '',
     };
-  }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style.fillColor]);
+  }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style?.fillColor]);
 
   // Note: Mouse interactions are now handled at the lane level
 
@@ -109,11 +109,11 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       className={`curve-item ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}
     >
       {/* Fill area */}
-      {style.fillColor && areaPath && (
+      {style?.fillColor && areaPath && (
         <path
           d={areaPath}
           fill={style.fillColor}
-          opacity={isSelected ? 1.0 : (isHovered ? 1.0 : (style.opacity || 0.15))}
+          opacity={isSelected ? 1.0 : (isHovered ? 1.0 : (style?.opacity || 0.15))}
           className="curve-fill"
           style={{
             transition: 'all 0.2s ease-in-out',
