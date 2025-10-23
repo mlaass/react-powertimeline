@@ -1,6 +1,6 @@
 {
   "name": "react-powertimeline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "High-performance, interactive React component for visualizing multi-layered time-series data",
   "type": "module",
   "main": "./dist/powertimeline.umd.js",

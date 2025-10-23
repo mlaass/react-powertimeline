@@ -5,6 +5,26 @@ All notable changes to PowerTimeline React Component will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2025-10-23
+
+### Added
+- MIT License file
+- Comprehensive API documentation (docs/API.md)
+- Documentation index with learning path (docs/README.md)
+- Release workflow with `/release` Claude command
+- Release management scripts in package.json
+- Support for icon, image, and SVG markers in EventItem
+
+### Changed
+- Package name from `@react-powertimeline` to `react-powertimeline`
+- Updated all import statements and documentation references
+- Updated GitHub repository URL to `mlaass/react-powertimeline`
+
+### Fixed
+- Storybook configuration and story rendering issues
+- Optional chaining for style properties in CurveItem
+- EventItem stories with interactive controls
+
 ## [0.1.0] - 2024-01-04
 
 ### 🎉 Initial Release
