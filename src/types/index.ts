@@ -97,13 +97,16 @@ export interface LaneStyle {
 export interface Item {
   /** Unique identifier for the item */
   id: string | number;
-  
+
+  /** Type discriminator */
+  type?: 'event' | 'time-range' | 'curve';
+
   /** ID of the lane this item belongs to */
   laneId: string | number;
-  
+
   /** Optional label configuration */
   label?: ItemLabel;
-  
+
   /** Additional metadata for the item */
   metadata?: Record<string, any>;
 }

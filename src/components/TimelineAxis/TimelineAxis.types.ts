@@ -2,7 +2,9 @@
  * TimelineAxis Component Types
  */
 
-export type { TimeRange, TimeScale } from '../../types';
+import type { TimeRange, TimeScale } from '../../types';
+
+export type { TimeRange, TimeScale };
 
 export interface TimelineAxisProps {
   /** Time range to display */

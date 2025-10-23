@@ -1,8 +1,19 @@
 /**
  * Lane Component Types
- * 
+ *
  * Re-exports and extends types specific to the Lane component.
  */
+
+import type {
+  Lane,
+  LaneStyle,
+  Item,
+  ItemType,
+  CurveItem,
+  EventItem,
+  TimeRangeItem,
+  StackingOrder,
+} from '../../types';
 
 export type {
   Lane,
@@ -13,7 +24,7 @@ export type {
   EventItem,
   TimeRangeItem,
   StackingOrder,
-} from '../../types';
+};
 
 // Lane-specific props interface
 export interface LaneProps extends Lane {
