@@ -5,16 +5,19 @@ export interface Transform {
     translateX: number;
     /** Horizontal scale factor */
     scaleX: number;
-    /** SVG transform string ready to use */
+    /** SVG transform string ready to use (pan-only, no scale to avoid stretching) */
     transformString: string;
 }
 /**
  * Calculate transform to map from reference time range to current view range
  *
+ * NOTE: This returns TRANSLATE-ONLY transform to avoid stretching artifacts.
+ * Zoom is handled by recalculating the timeScale, not by SVG transform scaling.
+ *
  * @param referenceTimeRange - The static reference time range that items are positioned against
  * @param currentTimeRange - The current visible time range after pan/zoom
  * @param width - The width of the timeline in pixels
- * @returns Transform object with translateX, scaleX, and a ready-to-use transform string
+ * @returns Transform object with translateX (scaleX provided for reference but not used in transform)
  *
  * @example
  * ```tsx

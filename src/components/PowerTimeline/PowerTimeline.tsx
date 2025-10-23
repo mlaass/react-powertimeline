@@ -47,16 +47,34 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
     x: 0,
   });
 
-  // Create reference time scale (static, doesn't change on pan/zoom)
-  // Items position themselves against this reference scale
-  const referenceTimeScale = useReferenceTimeScale(initialTimeRange, [0, width]);
+  // Reference time range - updates only on zoom, not on pan
+  // This allows smooth O(1) panning while accepting O(n) recalculation on zoom
+  const [referenceTimeRange, setReferenceTimeRange] = useState<TimeRange>(initialTimeRange);
 
-  // Calculate transform from reference to current view
-  // This single transform handles all pan/zoom without recalculating item positions
-  const viewTransform = useTransform(initialTimeRange, currentTimeRange, width);
+  // Detect zoom vs pan by checking if duration changed
+  const lastDurationRef = useRef<number>(
+    initialTimeRange.end.getTime() - initialTimeRange.start.getTime()
+  );
 
-  // Create time scale for current view (used for axis and virtualization)
-  const timeScale = useTimeScale(currentTimeRange, [0, width]);
+  useEffect(() => {
+    const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
+    const lastDuration = lastDurationRef.current;
+
+    // If duration changed significantly (>1ms to avoid floating point issues), it's a zoom
+    if (Math.abs(currentDuration - lastDuration) > 1) {
+      // Zoom detected - update reference range to trigger item recalculation
+      setReferenceTimeRange(currentTimeRange);
+      lastDurationRef.current = currentDuration;
+    }
+    // If only position changed (same duration), it's a pan - keep reference range
+  }, [currentTimeRange]);
+
+  // Create time scale from reference range (static during pan, updates on zoom)
+  const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
+
+  // Calculate pan transform from reference to current view
+  // This provides smooth O(1) panning via translate-only transform
+  const viewTransform = useTransform(referenceTimeRange, currentTimeRange, width);
 
   // Setup virtualization
   const { virtualizationState, performanceMetrics, itemsByLane } = useVirtualizationWithPerformance(
@@ -297,7 +315,7 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
               key={lane.id}
               {...lane}
               items={laneItems}
-              timeScale={referenceTimeScale}
+              timeScale={timeScale}
               viewTransform={viewTransform}
               viewport={virtualizationState}
               onItemClick={handleItemClick}
@@ -336,7 +354,7 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
 
       {/* Timeline axis */}
       <TimelineAxis
-        referenceTimeRange={initialTimeRange}
+        timeRange={referenceTimeRange}
         currentTimeRange={currentTimeRange}
         viewTransform={viewTransform}
         width={width}

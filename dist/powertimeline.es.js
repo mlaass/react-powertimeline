@@ -2267,7 +2267,7 @@ function useReferenceTimeScale(referenceTimeRange, pixelRange) {
   ]);
 }
 const TimelineAxis = ({
-  referenceTimeRange,
+  timeRange,
   currentTimeRange,
   viewTransform,
   width,
@@ -2277,7 +2277,7 @@ const TimelineAxis = ({
 }) => {
   const svgRef = useRef(null);
   const gRef = useRef(null);
-  const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
+  const timeScale = useReferenceTimeScale(timeRange, [0, width]);
   const { interval, format } = useMemo(() => {
     const duration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
     if (duration <= 60 * 1e3) {
@@ -2457,11 +2457,12 @@ function useTransform(referenceTimeRange, currentTimeRange, width) {
     const currentStartMs = currentTimeRange.start.getTime();
     const timeDelta = currentStartMs - referenceStartMs;
     const pxPerMs = width / referenceDuration;
-    const translateX = -timeDelta * pxPerMs * scaleX;
-    const transformString = `translate(${translateX}, 0) scale(${scaleX}, 1)`;
+    const translateX = -timeDelta * pxPerMs;
+    const transformString = `translate(${translateX}, 0)`;
     return {
       translateX,
       scaleX,
+      // Provided for reference but not used in transform
       transformString
     };
   }, [
@@ -2495,9 +2496,20 @@ const PowerTimeline = forwardRef(({
     visible: false,
     x: 0
   });
-  const referenceTimeScale = useReferenceTimeScale(initialTimeRange, [0, width]);
-  const viewTransform = useTransform(initialTimeRange, currentTimeRange, width);
-  useTimeScale(currentTimeRange, [0, width]);
+  const [referenceTimeRange, setReferenceTimeRange] = useState(initialTimeRange);
+  const lastDurationRef = useRef(
+    initialTimeRange.end.getTime() - initialTimeRange.start.getTime()
+  );
+  useEffect(() => {
+    const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
+    const lastDuration = lastDurationRef.current;
+    if (Math.abs(currentDuration - lastDuration) > 1) {
+      setReferenceTimeRange(currentTimeRange);
+      lastDurationRef.current = currentDuration;
+    }
+  }, [currentTimeRange]);
+  const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
+  const viewTransform = useTransform(referenceTimeRange, currentTimeRange, width);
   const { virtualizationState, performanceMetrics, itemsByLane } = useVirtualizationWithPerformance(
     items,
     currentTimeRange,
@@ -2710,7 +2722,7 @@ const PowerTimeline = forwardRef(({
                   {
                     ...lane,
                     items: laneItems,
-                    timeScale: referenceTimeScale,
+                    timeScale,
                     viewTransform,
                     viewport: virtualizationState,
                     onItemClick: handleItemClick,
@@ -2753,7 +2765,7 @@ const PowerTimeline = forwardRef(({
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           TimelineAxis,
           {
-            referenceTimeRange: initialTimeRange,
+            timeRange: referenceTimeRange,
             currentTimeRange,
             viewTransform,
             width,

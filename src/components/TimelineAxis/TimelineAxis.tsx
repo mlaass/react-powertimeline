@@ -18,11 +18,11 @@ import { useReferenceTimeScale } from '../../hooks/useTimeScale';
 import type { Transform } from '../../hooks/useTransform';
 
 export interface TimelineAxisProps {
-  /** Reference time range (static) */
-  referenceTimeRange: TimeRange;
-  /** Current visible time range (for tick calculation) */
+  /** Reference time range (for scale calculation) */
+  timeRange: TimeRange;
+  /** Current visible time range (for tick formatting decisions) */
   currentTimeRange: TimeRange;
-  /** View transform for pan/zoom */
+  /** View transform for pan offset (translate-only) */
   viewTransform: Transform;
   /** Width of the axis */
   width: number;
@@ -35,7 +35,7 @@ export interface TimelineAxisProps {
 }
 
 export const TimelineAxis: React.FC<TimelineAxisProps> = ({
-  referenceTimeRange,
+  timeRange,
   currentTimeRange,
   viewTransform,
   width,
@@ -46,10 +46,10 @@ export const TimelineAxis: React.FC<TimelineAxisProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
 
-  // Create reference time scale (static, doesn't change on pan/zoom)
-  const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
+  // Create time scale from reference range (static during pan, updates on zoom)
+  const timeScale = useReferenceTimeScale(timeRange, [0, width]);
 
-  // Determine appropriate time interval and format based on CURRENT view
+  // Determine appropriate time interval and format based on current visible range
   const { interval, format } = useMemo(() => {
     const duration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
     const targetTicks = Math.max(4, Math.min(12, width / 80)); // 4-12 ticks based on width

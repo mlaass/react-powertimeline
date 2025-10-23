@@ -16,17 +16,20 @@ export interface Transform {
   translateX: number;
   /** Horizontal scale factor */
   scaleX: number;
-  /** SVG transform string ready to use */
+  /** SVG transform string ready to use (pan-only, no scale to avoid stretching) */
   transformString: string;
 }
 
 /**
  * Calculate transform to map from reference time range to current view range
  *
+ * NOTE: This returns TRANSLATE-ONLY transform to avoid stretching artifacts.
+ * Zoom is handled by recalculating the timeScale, not by SVG transform scaling.
+ *
  * @param referenceTimeRange - The static reference time range that items are positioned against
  * @param currentTimeRange - The current visible time range after pan/zoom
  * @param width - The width of the timeline in pixels
- * @returns Transform object with translateX, scaleX, and a ready-to-use transform string
+ * @returns Transform object with translateX (scaleX provided for reference but not used in transform)
  *
  * @example
  * ```tsx
@@ -51,8 +54,8 @@ export function useTransform(
     // If current view is zoomed out (larger duration), scaleX < 1
     const scaleX = referenceDuration / currentDuration;
 
-    // Calculate how much to shift horizontally
-    // This accounts for both panning and the scaling center point
+    // Calculate how much to shift horizontally for PANNING ONLY
+    // For zoom, we recalculate the timeScale instead of using transform scale
     const referenceStartMs = referenceTimeRange.start.getTime();
     const currentStartMs = currentTimeRange.start.getTime();
     const timeDelta = currentStartMs - referenceStartMs;
@@ -60,17 +63,17 @@ export function useTransform(
     // Pixels per millisecond at reference scale
     const pxPerMs = width / referenceDuration;
 
-    // Translation accounts for both pan offset and scale adjustment
-    const translateX = -timeDelta * pxPerMs * scaleX;
+    // Translation for pan offset only (no scale component to avoid stretching)
+    const translateX = -timeDelta * pxPerMs;
 
-    // Create SVG transform string
-    // Note: We only scale horizontally (scaleX), not vertically
-    // This preserves item heights while allowing horizontal pan/zoom
-    const transformString = `translate(${translateX}, 0) scale(${scaleX}, 1)`;
+    // Create SVG transform string with TRANSLATE ONLY
+    // We do NOT apply scale transform to avoid stretching text, markers, and strokes
+    // Zoom is handled by recalculating timeScale and re-rendering items with new positions
+    const transformString = `translate(${translateX}, 0)`;
 
     return {
       translateX,
-      scaleX,
+      scaleX, // Provided for reference but not used in transform
       transformString,
     };
   }, [

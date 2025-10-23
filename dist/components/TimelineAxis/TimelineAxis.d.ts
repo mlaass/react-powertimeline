@@ -3,11 +3,11 @@ import { TimeRange } from '../../types';
 import { Transform } from '../../hooks/useTransform';
 
 export interface TimelineAxisProps {
-    /** Reference time range (static) */
-    referenceTimeRange: TimeRange;
-    /** Current visible time range (for tick calculation) */
+    /** Reference time range (for scale calculation) */
+    timeRange: TimeRange;
+    /** Current visible time range (for tick formatting decisions) */
     currentTimeRange: TimeRange;
-    /** View transform for pan/zoom */
+    /** View transform for pan offset (translate-only) */
     viewTransform: Transform;
     /** Width of the axis */
     width: number;
