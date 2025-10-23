@@ -47,10 +47,12 @@ function InteractiveFeaturesDemo() {
     },
   ]);
 
-  const [currentTimeRange, setCurrentTimeRange] = React.useState<TimeRange>({
+  const initialTimeRange: TimeRange = {
     start: new Date('2024-01-01T08:30:00Z'),
     end: new Date('2024-01-01T15:30:00Z'),
-  });
+  };
+
+  const [currentTimeRange, setCurrentTimeRange] = React.useState<TimeRange>(initialTimeRange);
 
   const [selectedItem, setSelectedItem] = React.useState<any>(null);
   const [realtimeMode, setRealtimeMode] = React.useState(false);
