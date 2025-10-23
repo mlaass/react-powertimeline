@@ -47,16 +47,16 @@ export const TimeRangeItem: React.FC<TimeRangeItemProps> = ({
   // Handle interactions
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onItemClick?.({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata }, event);
+    onItemClick?.({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata } as import('../../../types').TimeRangeItem, event);
   };
 
   const handleMouseEnter = (event: React.MouseEvent) => {
-    onItemHover?.({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata }, event);
+    onItemHover?.({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata } as import('../../../types').TimeRangeItem, event);
   };
 
   // Generate accessibility label
   const ariaLabel = useMemo(() => {
-    return generateItemAriaLabel({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata });
+    return generateItemAriaLabel({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata } as import('../../../types').TimeRangeItem);
   }, [id, type, laneId, startTime, endTime, style, stackLevel, label, metadata]);
 
 

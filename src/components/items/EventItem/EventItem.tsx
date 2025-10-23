@@ -34,16 +34,16 @@ export const EventItem: React.FC<EventItemProps> = ({
   // Handle interactions
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onItemClick?.({ id, type, laneId, time, style, label, metadata }, event);
+    onItemClick?.({ id, type, laneId, time, style, label, metadata } as import('../../../types').EventItem, event);
   };
 
   const handleMouseEnter = (event: React.MouseEvent) => {
-    onItemHover?.({ id, type, laneId, time, style, label, metadata }, event);
+    onItemHover?.({ id, type, laneId, time, style, label, metadata } as import('../../../types').EventItem, event);
   };
 
   // Generate accessibility label
   const ariaLabel = useMemo(() => {
-    return generateItemAriaLabel({ id, type, laneId, time, style, label, metadata });
+    return generateItemAriaLabel({ id, type, laneId, time, style, label, metadata } as import('../../../types').EventItem);
   }, [id, type, laneId, time, style, label, metadata]);
 
   // Render marker based on type

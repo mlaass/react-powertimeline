@@ -109,6 +109,9 @@ export interface Item {
 
   /** Additional metadata for the item */
   metadata?: Record<string, any>;
+
+  /** Whether this item is currently selected (managed by PowerTimeline) */
+  isSelected?: boolean;
 }
 
 export interface ItemLabel {

@@ -44,11 +44,11 @@ export function calculateVisibleItems(
 export function isItemInTimeRange(item: Item, timeRange: TimeRange): boolean {
   switch (item.type) {
     case 'curve':
-      return isCurveItemInTimeRange(item, timeRange);
+      return isCurveItemInTimeRange(item as CurveItem, timeRange);
     case 'event':
-      return isEventItemInTimeRange(item, timeRange);
+      return isEventItemInTimeRange(item as EventItem, timeRange);
     case 'time-range':
-      return isTimeRangeItemInTimeRange(item, timeRange);
+      return isTimeRangeItemInTimeRange(item as TimeRangeItem, timeRange);
     default:
       return false;
   }

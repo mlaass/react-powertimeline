@@ -110,17 +110,23 @@ export function useItemRenderers(
 
     let itemTime: Date;
     switch (item.type) {
-      case 'event':
-        itemTime = item.time;
+      case 'event': {
+        const eventItem = item as import('../types').EventItem;
+        itemTime = eventItem.time;
         break;
-      case 'time-range':
-        itemTime = new Date((item.startTime.getTime() + item.endTime.getTime()) / 2);
+      }
+      case 'time-range': {
+        const rangeItem = item as import('../types').TimeRangeItem;
+        itemTime = new Date((rangeItem.startTime.getTime() + rangeItem.endTime.getTime()) / 2);
         break;
-      case 'curve':
-        if (item.dataPoints.length === 0) return 0;
-        const midIndex = Math.floor(item.dataPoints.length / 2);
-        itemTime = item.dataPoints[midIndex].time;
+      }
+      case 'curve': {
+        const curveItem = item as import('../types').CurveItem;
+        if (curveItem.dataPoints.length === 0) return 0;
+        const midIndex = Math.floor(curveItem.dataPoints.length / 2);
+        itemTime = curveItem.dataPoints[midIndex].time;
         break;
+      }
       default:
         return 0;
     }

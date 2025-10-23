@@ -5,29 +5,35 @@
  * in the PowerTimeline component.
  */
 
-import type { Item, Lane, TimeRange } from '../types';
+import type { Item, Lane, TimeRange, CurveItem, EventItem, TimeRangeItem } from '../types';
 
 /**
  * Generates accessible labels for timeline items
  */
 export function generateItemAriaLabel(item: Item): string {
   const baseLabel = item.label?.text || `Item ${item.id}`;
-  
+
   switch (item.type) {
-    case 'curve':
-      const pointCount = item.dataPoints.length;
+    case 'curve': {
+      const curveItem = item as CurveItem;
+      const pointCount = curveItem.dataPoints.length;
       return `${baseLabel}, curve with ${pointCount} data points`;
-    
-    case 'event':
-      const eventTime = item.time.toLocaleString();
+    }
+
+    case 'event': {
+      const eventItem = item as EventItem;
+      const eventTime = eventItem.time.toLocaleString();
       return `${baseLabel}, event at ${eventTime}`;
-    
-    case 'time-range':
-      const startTime = item.startTime.toLocaleString();
-      const endTime = item.endTime.toLocaleString();
-      const duration = formatDuration(item.endTime.getTime() - item.startTime.getTime());
+    }
+
+    case 'time-range': {
+      const rangeItem = item as TimeRangeItem;
+      const startTime = rangeItem.startTime.toLocaleString();
+      const endTime = rangeItem.endTime.toLocaleString();
+      const duration = formatDuration(rangeItem.endTime.getTime() - rangeItem.startTime.getTime());
       return `${baseLabel}, time range from ${startTime} to ${endTime}, duration ${duration}`;
-    
+    }
+
     default:
       return baseLabel;
   }

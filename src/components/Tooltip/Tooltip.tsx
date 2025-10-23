@@ -52,16 +52,17 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   const renderContent = () => {
     switch (item.type) {
-      case 'curve':
+      case 'curve': {
+        const curveItem = item as import('../../types').CurveItem;
         return (
           <div className="tooltip-content">
             <div className="tooltip-header">
-              <div 
+              <div
                 className="tooltip-color-indicator"
-                style={{ backgroundColor: item.style?.strokeColor || '#007bff' }}
+                style={{ backgroundColor: curveItem.style?.strokeColor || '#007bff' }}
               />
               <span className="tooltip-title">
-                {item.label?.text || `Curve ${item.id}`}
+                {curveItem.label?.text || `Curve ${curveItem.id}`}
               </span>
             </div>
             {context?.value !== undefined && (
@@ -81,25 +82,27 @@ export const Tooltip: React.FC<TooltipProps> = ({
             )}
           </div>
         );
+      }
 
-      case 'event':
+      case 'event': {
+        const eventItem = item as import('../../types').EventItem;
         return (
           <div className="tooltip-content">
             <div className="tooltip-header">
-              <div 
+              <div
                 className="tooltip-color-indicator"
-                style={{ backgroundColor: item.style?.color || '#dc3545' }}
+                style={{ backgroundColor: eventItem.style?.color || '#dc3545' }}
               />
               <span className="tooltip-title">
-                {item.label?.text || `Event ${item.id}`}
+                {eventItem.label?.text || `Event ${eventItem.id}`}
               </span>
             </div>
             <div className="tooltip-time">
-              {formatTime(item.time)}
+              {formatTime(eventItem.time)}
             </div>
-            {item.metadata && (
+            {eventItem.metadata && (
               <div className="tooltip-metadata">
-                {Object.entries(item.metadata).map(([key, value]) => (
+                {Object.entries(eventItem.metadata).map(([key, value]) => (
                   <div key={key} className="tooltip-metadata-item">
                     <span className="tooltip-metadata-key">{key}:</span>
                     <span className="tooltip-metadata-value">{String(value)}</span>
@@ -109,32 +112,34 @@ export const Tooltip: React.FC<TooltipProps> = ({
             )}
           </div>
         );
+      }
 
-      case 'time-range':
-        const duration = item.endTime.getTime() - item.startTime.getTime();
-        const durationStr = duration < 60000 ? `${Math.round(duration/1000)}s` : 
-                           duration < 3600000 ? `${Math.round(duration/60000)}m` : 
+      case 'time-range': {
+        const rangeItem = item as import('../../types').TimeRangeItem;
+        const duration = rangeItem.endTime.getTime() - rangeItem.startTime.getTime();
+        const durationStr = duration < 60000 ? `${Math.round(duration/1000)}s` :
+                           duration < 3600000 ? `${Math.round(duration/60000)}m` :
                            `${Math.round(duration/3600000)}h`;
-        
+
         return (
           <div className="tooltip-content">
             <div className="tooltip-header">
-              <div 
+              <div
                 className="tooltip-color-indicator"
-                style={{ backgroundColor: item.style?.backgroundColor || '#28a745' }}
+                style={{ backgroundColor: rangeItem.style?.backgroundColor || '#28a745' }}
               />
               <span className="tooltip-title">
-                {item.label?.text || `Range ${item.id}`}
+                {rangeItem.label?.text || `Range ${rangeItem.id}`}
               </span>
             </div>
             <div className="tooltip-time-range">
-              <div>Start: {formatTime(item.startTime)}</div>
-              <div>End: {formatTime(item.endTime)}</div>
+              <div>Start: {formatTime(rangeItem.startTime)}</div>
+              <div>End: {formatTime(rangeItem.endTime)}</div>
               <div>Duration: {durationStr}</div>
             </div>
-            {item.metadata && (
+            {rangeItem.metadata && (
               <div className="tooltip-metadata">
-                {Object.entries(item.metadata).map(([key, value]) => (
+                {Object.entries(rangeItem.metadata).map(([key, value]) => (
                   <div key={key} className="tooltip-metadata-item">
                     <span className="tooltip-metadata-key">{key}:</span>
                     <span className="tooltip-metadata-value">{String(value)}</span>
@@ -144,6 +149,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
             )}
           </div>
         );
+      }
 
       default:
         return (

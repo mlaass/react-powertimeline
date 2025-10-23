@@ -88,7 +88,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
 
   // Generate accessibility label
   const ariaLabel = useMemo(() => {
-    return generateItemAriaLabel({ id, type, laneId, dataPoints, style, interpolation, label, metadata });
+    return generateItemAriaLabel({ id, type, laneId, dataPoints, style, interpolation, label, metadata } as import('../../../types').CurveItem);
   }, [id, type, laneId, dataPoints, style, interpolation, label, metadata]);
 
   if (!timeScale || dataPoints.length < 2) {

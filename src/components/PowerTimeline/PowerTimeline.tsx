@@ -7,7 +7,7 @@
 
 import React, { useRef, useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { select } from 'd3-selection';
-import type { PowerTimelineProps, PowerTimelineRef, TimeRange } from './PowerTimeline.types';
+import type { PowerTimelineProps, PowerTimelineRef, TimeRange, ItemType } from './PowerTimeline.types';
 import { Lane } from '../Lane';
 import { TimelineAxis } from '../TimelineAxis';
 import { Cursor } from '../Cursor';
@@ -309,7 +309,7 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
           const laneItems = (itemsByLane.get(lane.id) || []).map(item => ({
             ...item,
             isSelected: selectedItemId === item.id
-          }));
+          } as ItemType));
           return (
             <Lane
               key={lane.id}

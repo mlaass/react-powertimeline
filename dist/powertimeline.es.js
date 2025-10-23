@@ -940,17 +940,23 @@ var jsxRuntimeExports = requireJsxRuntime();
 function generateItemAriaLabel(item) {
   const baseLabel = item.label?.text || `Item ${item.id}`;
   switch (item.type) {
-    case "curve":
-      const pointCount = item.dataPoints.length;
+    case "curve": {
+      const curveItem = item;
+      const pointCount = curveItem.dataPoints.length;
       return `${baseLabel}, curve with ${pointCount} data points`;
-    case "event":
-      const eventTime = item.time.toLocaleString();
+    }
+    case "event": {
+      const eventItem = item;
+      const eventTime = eventItem.time.toLocaleString();
       return `${baseLabel}, event at ${eventTime}`;
-    case "time-range":
-      const startTime = item.startTime.toLocaleString();
-      const endTime = item.endTime.toLocaleString();
-      const duration = formatDuration(item.endTime.getTime() - item.startTime.getTime());
+    }
+    case "time-range": {
+      const rangeItem = item;
+      const startTime = rangeItem.startTime.toLocaleString();
+      const endTime = rangeItem.endTime.toLocaleString();
+      const duration = formatDuration(rangeItem.endTime.getTime() - rangeItem.startTime.getTime());
       return `${baseLabel}, time range from ${startTime} to ${endTime}, duration ${duration}`;
+    }
     default:
       return baseLabel;
   }
@@ -2825,36 +2831,39 @@ const Tooltip = ({
   };
   const renderContent = () => {
     switch (item.type) {
-      case "curve":
+      case "curve": {
+        const curveItem = item;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-content", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-header", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
                 className: "tooltip-color-indicator",
-                style: { backgroundColor: item.style?.strokeColor || "#007bff" }
+                style: { backgroundColor: curveItem.style?.strokeColor || "#007bff" }
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-title", children: item.label?.text || `Curve ${item.id}` })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-title", children: curveItem.label?.text || `Curve ${curveItem.id}` })
           ] }),
           context?.value !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-value", children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: formatValue(context.value) }) }),
           context?.timestamp && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-time", children: formatTime(context.timestamp) }),
           context?.isInterpolated && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-info", children: "Interpolated value" })
         ] });
-      case "event":
+      }
+      case "event": {
+        const eventItem = item;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-content", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-header", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
                 className: "tooltip-color-indicator",
-                style: { backgroundColor: item.style?.color || "#dc3545" }
+                style: { backgroundColor: eventItem.style?.color || "#dc3545" }
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-title", children: item.label?.text || `Event ${item.id}` })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-title", children: eventItem.label?.text || `Event ${eventItem.id}` })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-time", children: formatTime(item.time) }),
-          item.metadata && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-metadata", children: Object.entries(item.metadata).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-metadata-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-time", children: formatTime(eventItem.time) }),
+          eventItem.metadata && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-metadata", children: Object.entries(eventItem.metadata).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-metadata-item", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "tooltip-metadata-key", children: [
               key,
               ":"
@@ -2862,8 +2871,10 @@ const Tooltip = ({
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-metadata-value", children: String(value) })
           ] }, key)) })
         ] });
-      case "time-range":
-        const duration = item.endTime.getTime() - item.startTime.getTime();
+      }
+      case "time-range": {
+        const rangeItem = item;
+        const duration = rangeItem.endTime.getTime() - rangeItem.startTime.getTime();
         const durationStr = duration < 6e4 ? `${Math.round(duration / 1e3)}s` : duration < 36e5 ? `${Math.round(duration / 6e4)}m` : `${Math.round(duration / 36e5)}h`;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-content", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-header", children: [
@@ -2871,26 +2882,26 @@ const Tooltip = ({
               "div",
               {
                 className: "tooltip-color-indicator",
-                style: { backgroundColor: item.style?.backgroundColor || "#28a745" }
+                style: { backgroundColor: rangeItem.style?.backgroundColor || "#28a745" }
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-title", children: item.label?.text || `Range ${item.id}` })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-title", children: rangeItem.label?.text || `Range ${rangeItem.id}` })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-time-range", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               "Start: ",
-              formatTime(item.startTime)
+              formatTime(rangeItem.startTime)
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               "End: ",
-              formatTime(item.endTime)
+              formatTime(rangeItem.endTime)
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               "Duration: ",
               durationStr
             ] })
           ] }),
-          item.metadata && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-metadata", children: Object.entries(item.metadata).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-metadata-item", children: [
+          rangeItem.metadata && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-metadata", children: Object.entries(rangeItem.metadata).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip-metadata-item", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "tooltip-metadata-key", children: [
               key,
               ":"
@@ -2898,6 +2909,7 @@ const Tooltip = ({
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tooltip-metadata-value", children: String(value) })
           ] }, key)) })
         ] });
+      }
       default:
         return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tooltip-title", children: item.id }) });
     }

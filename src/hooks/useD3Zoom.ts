@@ -225,8 +225,8 @@ export function useTouchGestures(
   onTouchEnd: (event: React.TouchEvent) => void;
 } {
   const touchStateRef = useRef<{
-    initialTouches: Touch[];
-    lastTouches: Touch[];
+    initialTouches: React.Touch[];
+    lastTouches: React.Touch[];
     initialDistance: number;
     initialCenter: { x: number; y: number };
   } | null>(null);
