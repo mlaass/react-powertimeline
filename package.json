@@ -1,5 +1,5 @@
 {
-  "name": "@react-powertimeline",
+  "name": "react-powertimeline",
   "version": "0.1.0",
   "description": "High-performance, interactive React component for visualizing multi-layered time-series data",
   "type": "module",
