@@ -1,9 +1,14 @@
 import { default as React } from 'react';
 import { TimeRange } from '../../types';
+import { Transform } from '../../hooks/useTransform';
 
 export interface TimelineAxisProps {
-    /** Time range to display */
-    timeRange: TimeRange;
+    /** Reference time range (static) */
+    referenceTimeRange: TimeRange;
+    /** Current visible time range (for tick calculation) */
+    currentTimeRange: TimeRange;
+    /** View transform for pan/zoom */
+    viewTransform: Transform;
     /** Width of the axis */
     width: number;
     /** Height of the axis */

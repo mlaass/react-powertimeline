@@ -2016,6 +2016,7 @@ const Lane = ({
   stackingOrder = "recent-top",
   items,
   timeScale,
+  viewTransform,
   viewport,
   onItemClick,
   onItemHover
@@ -2197,13 +2198,13 @@ const Lane = ({
                   opacity: 0.3
                 }
               ),
-              items.sort((a, b) => {
+              /* @__PURE__ */ jsxRuntimeExports.jsx("g", { transform: viewTransform?.transformString || "", children: items.sort((a, b) => {
                 const aSelected = a.type === "curve" && a.isSelected;
                 const bSelected = b.type === "curve" && b.isSelected;
                 if (aSelected && !bSelected) return 1;
                 if (!aSelected && bSelected) return -1;
                 return 0;
-              }).map(renderItem)
+              }).map(renderItem) })
             ]
           }
         ),
@@ -2252,8 +2253,23 @@ function useTimeScale(timeRange, pixelRange) {
     return createTimeScale(timeRange, pixelRange);
   }, [timeRange.start.getTime(), timeRange.end.getTime(), pixelRange[0], pixelRange[1]]);
 }
+function useReferenceTimeScale(referenceTimeRange, pixelRange) {
+  const timeScaleRef = useRef(null);
+  return useMemo(() => {
+    const newScale = createTimeScale(referenceTimeRange, pixelRange);
+    timeScaleRef.current = newScale;
+    return newScale;
+  }, [
+    referenceTimeRange.start.getTime(),
+    referenceTimeRange.end.getTime(),
+    pixelRange[0],
+    pixelRange[1]
+  ]);
+}
 const TimelineAxis = ({
-  timeRange,
+  referenceTimeRange,
+  currentTimeRange,
+  viewTransform,
   width,
   height,
   className,
@@ -2261,9 +2277,9 @@ const TimelineAxis = ({
 }) => {
   const svgRef = useRef(null);
   const gRef = useRef(null);
-  const timeScale = useTimeScale(timeRange, [0, width]);
+  const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
   const { interval, format } = useMemo(() => {
-    const duration = timeRange.end.getTime() - timeRange.start.getTime();
+    const duration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
     if (duration <= 60 * 1e3) {
       return { interval: timeSecond.every(10), format: timeFormat("%H:%M:%S") };
     } else if (duration <= 60 * 60 * 1e3) {
@@ -2279,7 +2295,7 @@ const TimelineAxis = ({
     } else {
       return { interval: timeMonth.every(1), format: timeFormat("%b %Y") };
     }
-  }, [timeRange, width]);
+  }, [currentTimeRange, width]);
   useEffect(() => {
     if (!gRef.current || !interval) return;
     const axis = axisBottom(timeScale.scale).ticks(interval).tickFormat(format);
@@ -2302,14 +2318,8 @@ const TimelineAxis = ({
         ...style
       },
       role: "img",
-      "aria-label": `Timeline axis showing time from ${timeRange.start.toLocaleString()} to ${timeRange.end.toLocaleString()}`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "g",
-        {
-          ref: gRef,
-          transform: `translate(0, 0)`
-        }
-      )
+      "aria-label": `Timeline axis showing time from ${currentTimeRange.start.toLocaleString()} to ${currentTimeRange.end.toLocaleString()}`,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx("g", { transform: viewTransform.transformString, children: /* @__PURE__ */ jsxRuntimeExports.jsx("g", { ref: gRef }) })
     }
   );
 };
@@ -2438,6 +2448,30 @@ function useD3Zoom(initialTimeRange, onViewChange, width, options = {}) {
     zoomToFit
   };
 }
+function useTransform(referenceTimeRange, currentTimeRange, width) {
+  return useMemo(() => {
+    const referenceDuration = referenceTimeRange.end.getTime() - referenceTimeRange.start.getTime();
+    const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
+    const scaleX = referenceDuration / currentDuration;
+    const referenceStartMs = referenceTimeRange.start.getTime();
+    const currentStartMs = currentTimeRange.start.getTime();
+    const timeDelta = currentStartMs - referenceStartMs;
+    const pxPerMs = width / referenceDuration;
+    const translateX = -timeDelta * pxPerMs * scaleX;
+    const transformString = `translate(${translateX}, 0) scale(${scaleX}, 1)`;
+    return {
+      translateX,
+      scaleX,
+      transformString
+    };
+  }, [
+    referenceTimeRange.start.getTime(),
+    referenceTimeRange.end.getTime(),
+    currentTimeRange.start.getTime(),
+    currentTimeRange.end.getTime(),
+    width
+  ]);
+}
 const PowerTimeline = forwardRef(({
   lanes,
   items,
@@ -2461,7 +2495,9 @@ const PowerTimeline = forwardRef(({
     visible: false,
     x: 0
   });
-  const timeScale = useTimeScale(currentTimeRange, [0, width]);
+  const referenceTimeScale = useReferenceTimeScale(initialTimeRange, [0, width]);
+  const viewTransform = useTransform(initialTimeRange, currentTimeRange, width);
+  useTimeScale(currentTimeRange, [0, width]);
   const { virtualizationState, performanceMetrics, itemsByLane } = useVirtualizationWithPerformance(
     items,
     currentTimeRange,
@@ -2674,7 +2710,8 @@ const PowerTimeline = forwardRef(({
                   {
                     ...lane,
                     items: laneItems,
-                    timeScale,
+                    timeScale: referenceTimeScale,
+                    viewTransform,
                     viewport: virtualizationState,
                     onItemClick: handleItemClick,
                     onItemHover: handleItemHover
@@ -2716,7 +2753,9 @@ const PowerTimeline = forwardRef(({
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           TimelineAxis,
           {
-            timeRange: currentTimeRange,
+            referenceTimeRange: initialTimeRange,
+            currentTimeRange,
+            viewTransform,
             width,
             height: axisHeight,
             style: {
@@ -2905,6 +2944,8 @@ export {
   timeToPixel,
   updateTimeScale,
   useD3Zoom,
+  useReferenceTimeScale,
   useTimeScale,
+  useTransform,
   useVirtualization
 };

@@ -19,9 +19,11 @@ export { Cursor } from './components/Cursor';
 export type * from './types';
 
 // Hooks (for custom implementations)
-export { useTimeScale } from './hooks/useTimeScale';
+export { useTimeScale, useReferenceTimeScale } from './hooks/useTimeScale';
 export { useVirtualization } from './hooks/useVirtualization';
 export { useD3Zoom } from './hooks/useD3Zoom';
+export { useTransform } from './hooks/useTransform';
+export type { Transform } from './hooks/useTransform';
 // Utilities (for advanced usage)
 export * from './utils/timeScale';
 export * from './utils/virtualization';

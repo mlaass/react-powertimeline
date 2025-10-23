@@ -311,8 +311,8 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 ## 📞 Support
 
 - **Documentation**: [Full API Reference](./docs/)
-- **Issues**: [GitHub Issues](https://github.com/your-org/react-powertimeline/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/react-powertimeline/discussions)
+- **Issues**: [GitHub Issues](https://github.com/mlaass/react-powertimeline/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/mlaass/react-powertimeline/discussions)
 - **Email**: support@powertimeline.dev
 
 ---

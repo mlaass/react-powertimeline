@@ -1,11 +1,14 @@
 import { Lane, LaneStyle, Item, ItemType, CurveItem, EventItem, TimeRangeItem, StackingOrder } from '../../types';
+import { Transform } from '../../hooks/useTransform';
 
 export type { Lane, LaneStyle, Item, ItemType, CurveItem, EventItem, TimeRangeItem, StackingOrder, };
 export interface LaneProps extends Lane {
     /** Items to render in this lane */
     items: ItemType[];
-    /** Time scale for positioning items */
+    /** Time scale for positioning items (reference scale, static) */
     timeScale?: any;
+    /** View transform for pan/zoom (translates from reference to current view) */
+    viewTransform?: Transform;
     /** Viewport information for virtualization */
     viewport?: any;
     /** Callback for item interactions */

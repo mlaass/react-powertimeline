@@ -11,9 +11,10 @@ import type { PowerTimelineProps, PowerTimelineRef, TimeRange } from './PowerTim
 import { Lane } from '../Lane';
 import { TimelineAxis } from '../TimelineAxis';
 import { Cursor } from '../Cursor';
-import { useTimeScale } from '../../hooks/useTimeScale';
+import { useTimeScale, useReferenceTimeScale } from '../../hooks/useTimeScale';
 import { useVirtualizationWithPerformance } from '../../hooks/useVirtualization';
 import { useD3Zoom } from '../../hooks/useD3Zoom';
+import { useTransform } from '../../hooks/useTransform';
 import { 
   generateTimelineAriaDescription,
   createKeyboardNavigationHandler,
@@ -46,7 +47,15 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
     x: 0,
   });
 
-  // Create time scale
+  // Create reference time scale (static, doesn't change on pan/zoom)
+  // Items position themselves against this reference scale
+  const referenceTimeScale = useReferenceTimeScale(initialTimeRange, [0, width]);
+
+  // Calculate transform from reference to current view
+  // This single transform handles all pan/zoom without recalculating item positions
+  const viewTransform = useTransform(initialTimeRange, currentTimeRange, width);
+
+  // Create time scale for current view (used for axis and virtualization)
   const timeScale = useTimeScale(currentTimeRange, [0, width]);
 
   // Setup virtualization
@@ -288,7 +297,8 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
               key={lane.id}
               {...lane}
               items={laneItems}
-              timeScale={timeScale}
+              timeScale={referenceTimeScale}
+              viewTransform={viewTransform}
               viewport={virtualizationState}
               onItemClick={handleItemClick}
               onItemHover={handleItemHover}
@@ -326,7 +336,9 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
 
       {/* Timeline axis */}
       <TimelineAxis
-        timeRange={currentTimeRange}
+        referenceTimeRange={initialTimeRange}
+        currentTimeRange={currentTimeRange}
+        viewTransform={viewTransform}
         width={width}
         height={axisHeight}
         style={{

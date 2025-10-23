@@ -1,11 +1,11 @@
 /**
  * useTimeScale Hook
- * 
+ *
  * Custom hook for managing D3 time scales in the PowerTimeline component.
  * Handles creation, updates, and transformations between time and pixel coordinates.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import type { TimeRange, TimeScale } from '../types';
 import { createTimeScale, updateTimeScale } from '../utils/timeScale';
 
@@ -19,6 +19,35 @@ export function useTimeScale(
   return useMemo(() => {
     return createTimeScale(timeRange, pixelRange);
   }, [timeRange.start.getTime(), timeRange.end.getTime(), pixelRange[0], pixelRange[1]]);
+}
+
+/**
+ * Hook for creating a static reference time scale that doesn't change on pan/zoom
+ * This is used for transform-based rendering where items are positioned once
+ * and then transformed via SVG transform attribute.
+ *
+ * @param referenceTimeRange - The static time range to use as reference
+ * @param pixelRange - The pixel range (typically [0, width])
+ * @returns A stable time scale that only updates when reference range changes
+ */
+export function useReferenceTimeScale(
+  referenceTimeRange: TimeRange,
+  pixelRange: [number, number]
+): TimeScale {
+  // Use ref to maintain stable reference across renders
+  const timeScaleRef = useRef<TimeScale | null>(null);
+
+  // Only recreate if reference range or pixel range actually changes
+  return useMemo(() => {
+    const newScale = createTimeScale(referenceTimeRange, pixelRange);
+    timeScaleRef.current = newScale;
+    return newScale;
+  }, [
+    referenceTimeRange.start.getTime(),
+    referenceTimeRange.end.getTime(),
+    pixelRange[0],
+    pixelRange[1],
+  ]);
 }
 
 /**

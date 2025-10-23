@@ -22,6 +22,7 @@ export const Lane: React.FC<LaneProps> = ({
   stackingOrder = 'recent-top',
   items,
   timeScale,
+  viewTransform,
   viewport,
   onItemClick,
   onItemHover,
@@ -237,17 +238,20 @@ export const Lane: React.FC<LaneProps> = ({
           opacity={0.3}
         />
 
-        {/* Render items - selected curves last (on top) */}
-        {items
-          .sort((a, b) => {
-            // Sort so selected curves render last (appear on top)
-            const aSelected = a.type === 'curve' && a.isSelected;
-            const bSelected = b.type === 'curve' && b.isSelected;
-            if (aSelected && !bSelected) return 1;
-            if (!aSelected && bSelected) return -1;
-            return 0;
-          })
-          .map(renderItem)}
+        {/* Transform group for pan/zoom optimization */}
+        <g transform={viewTransform?.transformString || ''}>
+          {/* Render items - selected curves last (on top) */}
+          {items
+            .sort((a, b) => {
+              // Sort so selected curves render last (appear on top)
+              const aSelected = a.type === 'curve' && a.isSelected;
+              const bSelected = b.type === 'curve' && b.isSelected;
+              if (aSelected && !bSelected) return 1;
+              if (!aSelected && bSelected) return -1;
+              return 0;
+            })
+            .map(renderItem)}
+        </g>
       </svg>
 
       {/* Empty state message */}

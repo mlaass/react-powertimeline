@@ -9,16 +9,21 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import { axisBottom } from 'd3-axis';
 import { select } from 'd3-selection';
 import { timeFormat } from 'd3-time-format';
-import { 
-  timeSecond, timeMinute, timeHour, timeDay, 
-  timeWeek, timeMonth, timeYear 
+import {
+  timeSecond, timeMinute, timeHour, timeDay,
+  timeWeek, timeMonth, timeYear
 } from 'd3-time';
 import type { TimeRange, TimeScale } from '../../types';
-import { useTimeScale } from '../../hooks/useTimeScale';
+import { useReferenceTimeScale } from '../../hooks/useTimeScale';
+import type { Transform } from '../../hooks/useTransform';
 
 export interface TimelineAxisProps {
-  /** Time range to display */
-  timeRange: TimeRange;
+  /** Reference time range (static) */
+  referenceTimeRange: TimeRange;
+  /** Current visible time range (for tick calculation) */
+  currentTimeRange: TimeRange;
+  /** View transform for pan/zoom */
+  viewTransform: Transform;
   /** Width of the axis */
   width: number;
   /** Height of the axis */
@@ -30,7 +35,9 @@ export interface TimelineAxisProps {
 }
 
 export const TimelineAxis: React.FC<TimelineAxisProps> = ({
-  timeRange,
+  referenceTimeRange,
+  currentTimeRange,
+  viewTransform,
   width,
   height,
   className,
@@ -39,12 +46,12 @@ export const TimelineAxis: React.FC<TimelineAxisProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
 
-  // Create time scale
-  const timeScale = useTimeScale(timeRange, [0, width]);
+  // Create reference time scale (static, doesn't change on pan/zoom)
+  const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
 
-  // Determine appropriate time interval and format
+  // Determine appropriate time interval and format based on CURRENT view
   const { interval, format } = useMemo(() => {
-    const duration = timeRange.end.getTime() - timeRange.start.getTime();
+    const duration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
     const targetTicks = Math.max(4, Math.min(12, width / 80)); // 4-12 ticks based on width
 
     // Choose interval based on duration
@@ -63,7 +70,7 @@ export const TimelineAxis: React.FC<TimelineAxisProps> = ({
     } else {
       return { interval: timeMonth.every(1), format: timeFormat('%b %Y') };
     }
-  }, [timeRange, width]);
+  }, [currentTimeRange, width]);
 
   // Render axis using D3
   useEffect(() => {
@@ -105,12 +112,11 @@ export const TimelineAxis: React.FC<TimelineAxisProps> = ({
         ...style,
       }}
       role="img"
-      aria-label={`Timeline axis showing time from ${timeRange.start.toLocaleString()} to ${timeRange.end.toLocaleString()}`}
+      aria-label={`Timeline axis showing time from ${currentTimeRange.start.toLocaleString()} to ${currentTimeRange.end.toLocaleString()}`}
     >
-      <g
-        ref={gRef}
-        transform={`translate(0, 0)`}
-      />
+      <g transform={viewTransform.transformString}>
+        <g ref={gRef} />
+      </g>
     </svg>
   );
 };
