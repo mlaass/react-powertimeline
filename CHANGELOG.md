@@ -5,6 +5,29 @@ All notable changes to PowerTimeline React Component will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-10-23
+
+### Added
+- Pan/zoom detection system to optimize rendering performance
+- `isSelected` property to Item interface for selection state management
+- Reference time scale that updates only on zoom events
+
+### Changed
+- Pan operations now use O(1) translate-only transforms for 60fps smooth scrolling
+- Zoom operations recalculate item positions (O(n)) only when time range duration changes
+- TimelineAxis now accepts separate reference and current time ranges
+
+### Fixed
+- Zoom stretching artifacts by using translate-only transforms instead of scale transforms
+- TypeScript build errors with proper type narrowing for discriminated unions
+- ESLint configuration to correctly reference @typescript-eslint plugin
+- Touch event type compatibility in useD3Zoom hook
+
+### Performance
+- Pan operations now achieve O(1) complexity via GPU-accelerated transforms
+- Eliminated per-frame item position recalculation during panning
+- Zoom operations maintained at acceptable O(n) complexity (infrequent events)
+
 ## [0.1.1] - 2025-10-23
 
 ### Added
