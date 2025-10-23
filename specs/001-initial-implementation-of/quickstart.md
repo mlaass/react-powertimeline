@@ -3,17 +3,17 @@
 ## Installation
 
 ```bash
-npm install @react-powertimeline
+npm install react-powertimeline
 # or
-yarn add @react-powertimeline
+yarn add react-powertimeline
 ```
 
 ## Basic Usage
 
 ```tsx
 import React, { useState } from 'react';
-import { PowerTimeline } from '@react-powertimeline';
-import type { Lane, CurveItem, EventItem, TimeRangeItem, TimeRange } from '@react-powertimeline';
+import { PowerTimeline } from 'react-powertimeline';
+import type { Lane, CurveItem, EventItem, TimeRangeItem, TimeRange } from 'react-powertimeline';
 
 function App() {
   // Define lanes
