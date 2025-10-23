@@ -120,7 +120,7 @@ export interface EventItem extends Item {
 }
 export interface EventStyle {
     /** Type of marker to display */
-    markerType: 'line' | 'circle' | 'triangle' | 'square' | 'custom';
+    markerType: 'line' | 'circle' | 'triangle' | 'square' | 'diamond' | 'custom' | 'icon' | 'image' | 'svg';
     /** Color of the marker */
     color: string;
     /** Size of the marker in pixels (default: 8) */
@@ -129,6 +129,12 @@ export interface EventStyle {
     strokeWidth?: number;
     /** Custom SVG path for markerType: 'custom' */
     customSvg?: string;
+    /** Icon class name (e.g., 'fa fa-star' for FontAwesome) for markerType: 'icon' */
+    iconClass?: string;
+    /** Image URL for markerType: 'image' */
+    imageUrl?: string;
+    /** Custom SVG element as React node for markerType: 'svg' */
+    customElement?: React.ReactNode;
 }
 export interface TimeRangeItem extends Item {
     type: 'time-range';
@@ -190,7 +196,7 @@ export interface PowerTimelineProps {
     ariaLabel?: string;
 }
 export type ItemType = CurveItem | EventItem | TimeRangeItem;
-export type MarkerType = 'line' | 'circle' | 'triangle' | 'square' | 'custom';
+export type MarkerType = 'line' | 'circle' | 'triangle' | 'square' | 'diamond' | 'custom' | 'icon' | 'image' | 'svg';
 export type InterpolationType = 'linear' | 'step' | 'basis' | 'cardinal';
 export type StackingOrder = 'recent-top' | 'recent-bottom' | 'custom';
 export type LabelPosition = 'top' | 'bottom' | 'inline';

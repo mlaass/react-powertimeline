@@ -20,7 +20,7 @@ export declare class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState>;
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void;
     handleRetry: () => void;
-    render(): string | number | boolean | import("react/jsx-runtime").JSX.Element | Iterable<React.ReactNode>;
+    render(): string | number | boolean | Iterable<React.ReactNode> | import("react/jsx-runtime").JSX.Element;
 }
 export default ErrorBoundary;
 //# sourceMappingURL=ErrorBoundary.d.ts.map

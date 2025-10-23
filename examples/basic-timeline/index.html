@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +12,22 @@
             padding: 20px;
             background-color: #f8f9fa;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         .timeline-container {
             margin: 20px 0;
             border: 1px solid #dee2e6;
             border-radius: 4px;
         }
+
         .info-panel {
             margin-top: 20px;
             padding: 16px;
@@ -31,6 +35,7 @@
             border-radius: 4px;
             border-left: 4px solid #007bff;
         }
+
         .code-block {
             background-color: #f1f3f4;
             padding: 12px;
@@ -42,13 +47,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Basic Timeline Example</h1>
         <p>This example demonstrates the basic usage of the PowerTimeline component with simple data.</p>
-        
+
         <div id="timeline-root" class="timeline-container"></div>
-        
+
         <div class="info-panel">
             <h3>Features Demonstrated:</h3>
             <ul>
@@ -62,37 +68,38 @@
         <div class="info-panel">
             <h3>Basic Usage:</h3>
             <div class="code-block">
-import { PowerTimeline } from '@powertimeline/react';
+                import { PowerTimeline } from '@react-powertimeline';
 
-const lanes = [
-  { id: 'events', height: 60, label: 'System Events' },
-  { id: 'metrics', height: 100, label: 'Performance' },
-  { id: 'deployments', height: 40, label: 'Deployments' }
-];
+                const lanes = [
+                { id: 'events', height: 60, label: 'System Events' },
+                { id: 'metrics', height: 100, label: 'Performance' },
+                { id: 'deployments', height: 40, label: 'Deployments' }
+                ];
 
-const items = [
-  {
-    id: 'event-1',
-    type: 'event',
-    laneId: 'events',
-    time: new Date('2024-01-01T10:00:00Z'),
-    style: { markerType: 'circle', color: '#dc3545', size: 8 }
-  },
-  // ... more items
-];
+                const items = [
+                {
+                id: 'event-1',
+                type: 'event',
+                laneId: 'events',
+                time: new Date('2024-01-01T10:00:00Z'),
+                style: { markerType: 'circle', color: '#dc3545', size: 8 }
+                },
+                // ... more items
+                ];
 
-&lt;PowerTimeline
-  lanes={lanes}
-  items={items}
-  initialTimeRange={{ start: startTime, end: endTime }}
-  onViewChange={(timeRange) => console.log('View changed:', timeRange)}
-  width={800}
-  height={300}
-/&gt;
+                &lt;PowerTimeline
+                lanes={lanes}
+                items={items}
+                initialTimeRange={{ start: startTime, end: endTime }}
+                onViewChange={(timeRange) => console.log('View changed:', timeRange)}
+                width={800}
+                height={300}
+                /&gt;
             </div>
         </div>
     </div>
 
     <script type="module" src="./main.tsx"></script>
 </body>
+
 </html>

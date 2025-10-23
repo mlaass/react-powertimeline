@@ -38,6 +38,15 @@ npm run examples         # Run examples server
 npm run examples:basic   # Run specific example
 ```
 
+### Release Management
+```bash
+/release                 # Execute release workflow (version bump, changelog, git tag, npm publish prep)
+npm run release:check    # Run all quality gates (lint, test, build)
+npm version patch        # Bump patch version (0.1.0 → 0.1.1) for bug fixes
+npm version minor        # Bump minor version (0.1.0 → 0.2.0) for new features
+npm version major        # Bump major version (0.1.0 → 1.0.0) for breaking changes
+```
+
 ## Architecture
 
 ### Core Component Hierarchy
@@ -100,6 +109,47 @@ npm test -- PowerTimeline  # Run PowerTimeline tests only
 npm test -- timeScale      # Run time scale tests only
 ```
 
+## Release Workflow
+
+### When to Create a Release
+- **Patch Version** (0.1.X): Bug fixes, documentation updates, small improvements
+- **Minor Version** (0.X.0): New features, backward-compatible enhancements
+- **Major Version** (X.0.0): Breaking changes, major API changes
+
+### Release Process
+1. Use `/release` command to start the release workflow
+2. The command will:
+   - Verify git status is clean
+   - Run all quality gates (lint, test, build)
+   - Prompt for version bump type (patch/minor/major)
+   - Update package.json version
+   - Prompt to update CHANGELOG.md following [Keep a Changelog](https://keepachangelog.com/) format
+   - Create git commit and tag
+   - Push changes and tags to remote
+   - Show manual npm publish instructions
+
+### CHANGELOG.md Format
+Use [Keep a Changelog](https://keepachangelog.com/) format:
+```markdown
+## [X.Y.Z] - YYYY-MM-DD
+### Added
+- New features
+
+### Changed
+- Changes in existing functionality
+
+### Fixed
+- Bug fixes
+```
+
+### Manual Publishing
+After `/release` completes, manually publish to npm:
+```bash
+npm pack                  # Test package locally
+npm publish --dry-run     # Verify what will be published
+npm publish               # Publish to npm registry
+```
+
 ## Important Notes
 
 - **Path Alias**: `@/` maps to `./src/` (configured in tsconfig.json and vite.config.ts)
@@ -108,3 +158,4 @@ npm test -- timeScale      # Run time scale tests only
 - **Strict Mode**: TypeScript strict mode is DISABLED (`strict: false` in tsconfig.json) - be aware when making changes
 - **Item Type Discrimination**: Always check `item.type` before accessing type-specific properties (e.g., `time` vs `startTime/endTime` vs `dataPoints`)
 - **D3 Selection Usage**: D3 is used selectively - only for scales, axes, zoom behavior, and shape generators. React handles all rendering.
+- **Git Commits**: Never add attribution to git commits (per project guidelines)

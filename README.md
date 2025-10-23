@@ -2,7 +2,7 @@
 
 A high-performance, interactive React component for visualizing multi-layered time-series data. Built with React 18, D3.js, and TypeScript for optimal performance and developer experience.
 
-[![npm version](https://badge.fury.io/js/@powertimeline/react.svg)](https://badge.fury.io/js/@powertimeline/react)
+[![npm version](https://badge.fury.io/js/@react-powertimeline.svg)](https://badge.fury.io/js/@react-powertimeline)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
@@ -22,19 +22,19 @@ A high-performance, interactive React component for visualizing multi-layered ti
 ### Installation
 
 ```bash
-npm install @powertimeline/react
+npm install @react-powertimeline
 # or
-yarn add @powertimeline/react
+yarn add @react-powertimeline
 # or
-pnpm add @powertimeline/react
+pnpm add @react-powertimeline
 ```
 
 ### Basic Usage
 
 ```tsx
 import React from 'react';
-import { PowerTimeline } from '@powertimeline/react';
-import type { Lane, EventItem, TimeRange } from '@powertimeline/react';
+import { PowerTimeline } from '@react-powertimeline';
+import type { Lane, EventItem, TimeRange } from '@react-powertimeline';
 
 const lanes: Lane[] = [
   { id: 'events', height: 60, label: 'System Events' },
@@ -187,7 +187,7 @@ const customLane: Lane = {
 Built-in error handling with graceful fallbacks.
 
 ```tsx
-import { ErrorBoundary } from '@powertimeline/react';
+import { ErrorBoundary } from '@react-powertimeline';
 
 <ErrorBoundary
   fallback={<div>Timeline unavailable</div>}

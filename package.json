@@ -1,5 +1,5 @@
 {
-  "name": "@powertimeline/react",
+  "name": "@react-powertimeline",
   "version": "0.1.0",
   "description": "High-performance, interactive React component for visualizing multi-layered time-series data",
   "type": "module",
@@ -38,6 +38,10 @@
     "examples:accessibility": "npm run examples accessibility-demo",
     "examples:styling": "npm run examples custom-styling",
     "examples:interactive": "npm run examples interactive-features",
+    "release:check": "npm run lint && npm test -- --run && npm run build",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version",
     "prepare": "husky install"
   },
   "keywords": [
@@ -54,12 +58,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/powertimeline/react.git"
+    "url": "git+https://github.com/react-powertimeline.git"
   },
   "bugs": {
-    "url": "https://github.com/powertimeline/react/issues"
+    "url": "https://github.com/react-powertimeline/issues"
   },
-  "homepage": "https://github.com/powertimeline/react#readme",
+  "homepage": "https://github.com/react-powertimeline#readme",
   "peerDependencies": {
     "react": ">=18.2.0",
     "react-dom": ">=18.2.0"

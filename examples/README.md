@@ -220,7 +220,7 @@ The accessibility example demonstrates:
 - Check the main [README.md](../README.md) for general setup
 - Review component documentation in [src/](../src/)
 - Browse Storybook stories for usage patterns
-- Check the [issues](https://github.com/powertimeline/react/issues) page
+- Check the [issues](https://github.com/react-powertimeline/issues) page
 
 ## 📝 Contributing
 

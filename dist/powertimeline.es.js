@@ -1,12 +1,9 @@
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 import require$$0, { useMemo, useState, useCallback, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { select } from "d3-selection";
-import { line, area, curveLinear, curveStep, curveBasis, curveCardinal } from "d3-shape";
+import { line, curveCardinal, curveBasis, curveStep, curveLinear, area } from "d3-shape";
 import { scaleTime } from "d3-scale";
 import { axisBottom } from "d3-axis";
 import { timeFormat } from "d3-time-format";
@@ -25,8 +22,7 @@ var reactJsxRuntime_production_min = {};
  */
 var hasRequiredReactJsxRuntime_production_min;
 function requireReactJsxRuntime_production_min() {
-  if (hasRequiredReactJsxRuntime_production_min)
-    return reactJsxRuntime_production_min;
+  if (hasRequiredReactJsxRuntime_production_min) return reactJsxRuntime_production_min;
   hasRequiredReactJsxRuntime_production_min = 1;
   var f = require$$0, k = Symbol.for("react.element"), l = Symbol.for("react.fragment"), m = Object.prototype.hasOwnProperty, n = f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner, p = { key: true, ref: true, __self: true, __source: true };
   function q(c, a, g) {
@@ -34,11 +30,8 @@ function requireReactJsxRuntime_production_min() {
     void 0 !== g && (e = "" + g);
     void 0 !== a.key && (e = "" + a.key);
     void 0 !== a.ref && (h = a.ref);
-    for (b in a)
-      m.call(a, b) && !p.hasOwnProperty(b) && (d[b] = a[b]);
-    if (c && c.defaultProps)
-      for (b in a = c.defaultProps, a)
-        void 0 === d[b] && (d[b] = a[b]);
+    for (b in a) m.call(a, b) && !p.hasOwnProperty(b) && (d[b] = a[b]);
+    if (c && c.defaultProps) for (b in a = c.defaultProps, a) void 0 === d[b] && (d[b] = a[b]);
     return { $$typeof: k, type: c, key: e, ref: h, props: d, _owner: n.current };
   }
   reactJsxRuntime_production_min.Fragment = l;
@@ -58,8 +51,7 @@ var reactJsxRuntime_development = {};
  */
 var hasRequiredReactJsxRuntime_development;
 function requireReactJsxRuntime_development() {
-  if (hasRequiredReactJsxRuntime_development)
-    return reactJsxRuntime_development;
+  if (hasRequiredReactJsxRuntime_development) return reactJsxRuntime_development;
   hasRequiredReactJsxRuntime_development = 1;
   if (process.env.NODE_ENV !== "production") {
     (function() {
@@ -547,10 +539,6 @@ function requireReactJsxRuntime_development() {
       };
       var specialPropKeyWarningShown;
       var specialPropRefWarningShown;
-      var didWarnAboutStringRefs;
-      {
-        didWarnAboutStringRefs = {};
-      }
       function hasValidRef(config) {
         {
           if (hasOwnProperty.call(config, "ref")) {
@@ -575,13 +563,7 @@ function requireReactJsxRuntime_development() {
       }
       function warnIfStringRefCannotBeAutoConverted(config, self) {
         {
-          if (typeof config.ref === "string" && ReactCurrentOwner.current && self && ReactCurrentOwner.current.stateNode !== self) {
-            var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
-            if (!didWarnAboutStringRefs[componentName]) {
-              error('Component "%s" contains the string ref "%s". Support for string refs will be removed in a future major release. This case cannot be automatically converted to an arrow function. We ask you to manually fix this case by using useRef() or createRef() instead. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-string-ref', getComponentNameFromType(ReactCurrentOwner.current.type), config.ref);
-              didWarnAboutStringRefs[componentName] = true;
-            }
-          }
+          if (typeof config.ref === "string" && ReactCurrentOwner.current && self) ;
         }
       }
       function defineKeyPropWarningGetter(props, displayName) {
@@ -735,11 +717,6 @@ function requireReactJsxRuntime_development() {
       }
       function getSourceInfoErrorAddendum(source) {
         {
-          if (source !== void 0) {
-            var fileName = source.fileName.replace(/^.*[\\\/]/, "");
-            var lineNumber = source.lineNumber;
-            return "\n\nCheck your code at " + fileName + ":" + lineNumber + ".";
-          }
           return "";
         }
       }
@@ -865,7 +842,7 @@ function requireReactJsxRuntime_development() {
             if (type === void 0 || typeof type === "object" && type !== null && Object.keys(type).length === 0) {
               info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.";
             }
-            var sourceInfo = getSourceInfoErrorAddendum(source);
+            var sourceInfo = getSourceInfoErrorAddendum();
             if (sourceInfo) {
               info += sourceInfo;
             } else {
@@ -948,12 +925,18 @@ function requireReactJsxRuntime_development() {
   }
   return reactJsxRuntime_development;
 }
-if (process.env.NODE_ENV === "production") {
-  jsxRuntime.exports = requireReactJsxRuntime_production_min();
-} else {
-  jsxRuntime.exports = requireReactJsxRuntime_development();
+var hasRequiredJsxRuntime;
+function requireJsxRuntime() {
+  if (hasRequiredJsxRuntime) return jsxRuntime.exports;
+  hasRequiredJsxRuntime = 1;
+  if (process.env.NODE_ENV === "production") {
+    jsxRuntime.exports = requireReactJsxRuntime_production_min();
+  } else {
+    jsxRuntime.exports = requireReactJsxRuntime_development();
+  }
+  return jsxRuntime.exports;
 }
-var jsxRuntimeExports = jsxRuntime.exports;
+var jsxRuntimeExports = requireJsxRuntime();
 function generateItemAriaLabel(item) {
   const baseLabel = item.label?.text || `Item ${item.id}`;
   switch (item.type) {
@@ -1079,22 +1062,19 @@ class FocusManager {
     );
   }
   focusNext() {
-    if (this.focusableElements.length === 0)
-      return false;
+    if (this.focusableElements.length === 0) return false;
     this.currentFocusIndex = (this.currentFocusIndex + 1) % this.focusableElements.length;
     this.focusableElements[this.currentFocusIndex].focus();
     return true;
   }
   focusPrevious() {
-    if (this.focusableElements.length === 0)
-      return false;
+    if (this.focusableElements.length === 0) return false;
     this.currentFocusIndex = this.currentFocusIndex <= 0 ? this.focusableElements.length - 1 : this.currentFocusIndex - 1;
     this.focusableElements[this.currentFocusIndex].focus();
     return true;
   }
   focusFirst() {
-    if (this.focusableElements.length === 0)
-      return false;
+    if (this.focusableElements.length === 0) return false;
     this.currentFocusIndex = 0;
     this.focusableElements[0].focus();
     return true;
@@ -1148,8 +1128,7 @@ class ScreenReaderAnnouncer {
 function getContrastRatio(color1, color2) {
   const getLuminance = (color) => {
     const rgb = color.match(/\d+/g);
-    if (!rgb || rgb.length < 3)
-      return 0.5;
+    if (!rgb || rgb.length < 3) return 0.5;
     const [r, g, b] = rgb.map((c) => {
       const val = parseInt(c) / 255;
       return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
@@ -1210,14 +1189,14 @@ const CurveItem = ({
       }
     }
     const lineGenerator = line().x((d) => timeScale.scale(d.time)).y((d) => effectiveYScale(d.value)).curve(curve);
-    const areaGenerator = style.fillColor ? area().x((d) => timeScale.scale(d.time)).y0(laneHeight).y1((d) => effectiveYScale(d.value)).curve(curve) : null;
+    const areaGenerator = style?.fillColor ? area().x((d) => timeScale.scale(d.time)).y0(laneHeight).y1((d) => effectiveYScale(d.value)).curve(curve) : null;
     return {
       linePath: lineGenerator(dataPoints) || "",
       areaPath: areaGenerator ? areaGenerator(dataPoints) || "" : ""
     };
-  }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style.fillColor]);
+  }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style?.fillColor]);
   const ariaLabel = useMemo(() => {
-    return generateItemAriaLabel({ id, type, laneId, dataPoints, style, interpolation, label, metadata });
+    return generateItemAriaLabel({ id, type, dataPoints, label });
   }, [id, type, laneId, dataPoints, style, interpolation, label, metadata]);
   if (!timeScale || dataPoints.length < 2) {
     return null;
@@ -1236,12 +1215,12 @@ const CurveItem = ({
       },
       className: `curve-item ${isSelected ? "selected" : ""} ${isHovered ? "hovered" : ""}`,
       children: [
-        style.fillColor && areaPath && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        style?.fillColor && areaPath && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "path",
           {
             d: areaPath,
             fill: style.fillColor,
-            opacity: isSelected ? 1 : isHovered ? 1 : style.opacity || 0.15,
+            opacity: isSelected ? 1 : isHovered ? 1 : style?.opacity || 0.15,
             className: "curve-fill",
             style: {
               transition: "all 0.2s ease-in-out",
@@ -1339,7 +1318,7 @@ const EventItem = ({
     onItemHover?.({ id, type, laneId, time, style, label, metadata }, event);
   };
   const ariaLabel = useMemo(() => {
-    return generateItemAriaLabel({ id, type, laneId, time, style, label, metadata });
+    return generateItemAriaLabel({ id, type, time, label });
   }, [id, type, laneId, time, style, label, metadata]);
   const renderMarker = () => {
     const size = isSelected ? (style.size || 8) + 2 : isHovered ? (style.size || 8) + 1 : style.size || 8;
@@ -1404,6 +1383,15 @@ const EventItem = ({
             ...commonProps
           }
         );
+      case "diamond":
+        const diamondPath = `M${x},${y - size} L${x + size},${y} L${x},${y + size} L${x - size},${y} Z`;
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: diamondPath,
+            ...commonProps
+          }
+        );
       case "custom":
         if (style.customSvg) {
           return /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -1412,6 +1400,98 @@ const EventItem = ({
               d: style.customSvg,
               transform: `translate(${x}, ${y})`,
               ...commonProps
+            }
+          );
+        }
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: x,
+            cy: y,
+            r: size,
+            ...commonProps
+          }
+        );
+      case "icon":
+        if (style.iconClass) {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "foreignObject",
+            {
+              x: x - size,
+              y: y - size,
+              width: size * 2,
+              height: size * 2,
+              style: {
+                overflow: "visible",
+                transition: "all 0.2s ease-in-out",
+                filter: dropShadow
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  style: {
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    height: "100%",
+                    color: style.color,
+                    fontSize: `${size * 1.5}px`
+                  },
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("i", { className: style.iconClass })
+                }
+              )
+            }
+          );
+        }
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: x,
+            cy: y,
+            r: size,
+            ...commonProps
+          }
+        );
+      case "image":
+        if (style.imageUrl) {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "image",
+            {
+              href: style.imageUrl,
+              x: x - size,
+              y: y - size,
+              width: size * 2,
+              height: size * 2,
+              preserveAspectRatio: "xMidYMid meet",
+              className: "event-marker event-marker-image",
+              style: {
+                transition: "all 0.2s ease-in-out",
+                filter: dropShadow
+              }
+            }
+          );
+        }
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: x,
+            cy: y,
+            r: size,
+            ...commonProps
+          }
+        );
+      case "svg":
+        if (style.customElement) {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "g",
+            {
+              transform: `translate(${x}, ${y})`,
+              style: {
+                transition: "all 0.2s ease-in-out",
+                filter: dropShadow
+              },
+              children: style.customElement
             }
           );
         }
@@ -1511,7 +1591,7 @@ const TimeRangeItem = ({
     onItemHover?.({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata }, event);
   };
   const ariaLabel = useMemo(() => {
-    return generateItemAriaLabel({ id, type, laneId, startTime, endTime, style, stackLevel, label, metadata });
+    return generateItemAriaLabel({ id, type, startTime, endTime, label });
   }, [id, type, laneId, startTime, endTime, style, stackLevel, label, metadata]);
   if (!timeScale || width <= 0) {
     return null;
@@ -1717,8 +1797,7 @@ function isItemInTimeRange(item, timeRange) {
   }
 }
 function isCurveItemInTimeRange(item, timeRange) {
-  if (item.dataPoints.length === 0)
-    return false;
+  if (item.dataPoints.length === 0) return false;
   const firstPoint = item.dataPoints[0];
   const lastPoint = item.dataPoints[item.dataPoints.length - 1];
   const curveTimeRange = {
@@ -1847,8 +1926,7 @@ function interpolateCurveValue(dataPoints, targetTime, interpolationType = "line
   if (dataPoints.length === 0) {
     return null;
   }
-  if (dataPoints.length === 1)
-    return dataPoints[0].value;
+  if (dataPoints.length === 1) return dataPoints[0].value;
   const targetTimestamp = targetTime.getTime();
   let leftPoint = null;
   let rightPoint = null;
@@ -1868,14 +1946,10 @@ function interpolateCurveValue(dataPoints, targetTime, interpolationType = "line
       return dataPoints[dataPoints.length - 1].value;
     }
   }
-  if (!leftPoint)
-    leftPoint = dataPoints[0];
-  if (!rightPoint)
-    rightPoint = dataPoints[dataPoints.length - 1];
-  if (leftPoint.time.getTime() === targetTimestamp)
-    return leftPoint.value;
-  if (rightPoint.time.getTime() === targetTimestamp)
-    return rightPoint.value;
+  if (!leftPoint) leftPoint = dataPoints[0];
+  if (!rightPoint) rightPoint = dataPoints[dataPoints.length - 1];
+  if (leftPoint.time.getTime() === targetTimestamp) return leftPoint.value;
+  if (rightPoint.time.getTime() === targetTimestamp) return rightPoint.value;
   switch (interpolationType) {
     case "step":
       return leftPoint.value;
@@ -1884,8 +1958,7 @@ function interpolateCurveValue(dataPoints, targetTime, interpolationType = "line
       const leftTime = leftPoint.time.getTime();
       const rightTime = rightPoint.time.getTime();
       const timeRange = rightTime - leftTime;
-      if (timeRange === 0)
-        return leftPoint.value;
+      if (timeRange === 0) return leftPoint.value;
       const progress = (targetTimestamp - leftTime) / timeRange;
       return leftPoint.value + (rightPoint.value - leftPoint.value) * progress;
     case "basis":
@@ -1893,8 +1966,7 @@ function interpolateCurveValue(dataPoints, targetTime, interpolationType = "line
       const leftTimeB = leftPoint.time.getTime();
       const rightTimeB = rightPoint.time.getTime();
       const timeRangeB = rightTimeB - leftTimeB;
-      if (timeRangeB === 0)
-        return leftPoint.value;
+      if (timeRangeB === 0) return leftPoint.value;
       const progressB = (targetTimestamp - leftTimeB) / timeRangeB;
       return leftPoint.value + (rightPoint.value - leftPoint.value) * progressB;
   }
@@ -1903,8 +1975,7 @@ function pixelToTimeFromScale(pixelX, timeScale) {
   return timeScale.scale.invert(pixelX);
 }
 function findHighestCurveAtPixel(curves, pixelX, timeScale, laneHeight = 100) {
-  if (curves.length === 0)
-    return null;
+  if (curves.length === 0) return null;
   const targetTime = pixelToTimeFromScale(pixelX, timeScale);
   let highestCurve = null;
   for (const curve of curves) {
@@ -1953,14 +2024,13 @@ const Lane = ({
   const [selectedCurveId, setSelectedCurveId] = useState(null);
   const stackLevels = useStackingLevels(items, stackingOrder);
   const ariaLabel = useMemo(() => {
-    return generateLaneAriaLabel({ id, height, style, label, stackingOrder }, items.length);
+    return generateLaneAriaLabel({ id, label }, items.length);
   }, [id, height, style, label, stackingOrder, items.length]);
   const curveItems = useMemo(() => {
     return items.filter((item) => item.type === "curve");
   }, [items]);
   const handleLaneMouseMove = useCallback((event) => {
-    if (!timeScale || curveItems.length === 0)
-      return;
+    if (!timeScale || curveItems.length === 0) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const highestCurve = findHighestCurveAtPixel(
@@ -1993,8 +2063,7 @@ const Lane = ({
     setHoveredCurveId(null);
   }, []);
   const handleLaneClick = useCallback((event) => {
-    if (!timeScale || curveItems.length === 0)
-      return;
+    if (!timeScale || curveItems.length === 0) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const highestCurve = findHighestCurveAtPixel(
@@ -2131,10 +2200,8 @@ const Lane = ({
               items.sort((a, b) => {
                 const aSelected = a.type === "curve" && a.isSelected;
                 const bSelected = b.type === "curve" && b.isSelected;
-                if (aSelected && !bSelected)
-                  return 1;
-                if (!aSelected && bSelected)
-                  return -1;
+                if (aSelected && !bSelected) return 1;
+                if (!aSelected && bSelected) return -1;
                 return 0;
               }).map(renderItem)
             ]
@@ -2214,8 +2281,7 @@ const TimelineAxis = ({
     }
   }, [timeRange, width]);
   useEffect(() => {
-    if (!gRef.current || !interval)
-      return;
+    if (!gRef.current || !interval) return;
     const axis = axisBottom(timeScale.scale).ticks(interval).tickFormat(format);
     select(gRef.current).call(axis).selectAll("text").attr("data-testid", "time-label").style("font-size", "12px").style("fill", "#666");
     select(gRef.current).selectAll(".domain").style("stroke", "#ccc");
@@ -2508,30 +2574,23 @@ const PowerTimeline = forwardRef(({
       handleViewChange(timeRange);
     },
     zoomToFit: () => {
-      if (items.length === 0)
-        return;
+      if (items.length === 0) return;
       let minTime = /* @__PURE__ */ new Date();
       let maxTime = /* @__PURE__ */ new Date();
       items.forEach((item) => {
         switch (item.type) {
           case "event":
-            if (item.time < minTime)
-              minTime = item.time;
-            if (item.time > maxTime)
-              maxTime = item.time;
+            if (item.time < minTime) minTime = item.time;
+            if (item.time > maxTime) maxTime = item.time;
             break;
           case "time-range":
-            if (item.startTime < minTime)
-              minTime = item.startTime;
-            if (item.endTime > maxTime)
-              maxTime = item.endTime;
+            if (item.startTime < minTime) minTime = item.startTime;
+            if (item.endTime > maxTime) maxTime = item.endTime;
             break;
           case "curve":
             item.dataPoints.forEach((point) => {
-              if (point.time < minTime)
-                minTime = point.time;
-              if (point.time > maxTime)
-                maxTime = point.time;
+              if (point.time < minTime) minTime = point.time;
+              if (point.time > maxTime) maxTime = point.time;
             });
             break;
         }
