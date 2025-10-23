@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PowerTimeline } from '../../src';
 import type { Lane, CurveItem, EventItem, TimeRangeItem, TimeRange } from '../../src/types';
 

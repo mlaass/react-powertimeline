@@ -118,6 +118,15 @@ export const EventItem: React.FC<EventItemProps> = ({
           />
         );
 
+      case 'diamond':
+        const diamondPath = `M${x},${y - size} L${x + size},${y} L${x},${y + size} L${x - size},${y} Z`;
+        return (
+          <path
+            d={diamondPath}
+            {...commonProps}
+          />
+        );
+
       case 'custom':
         if (style.customSvg) {
           return (
@@ -129,6 +138,101 @@ export const EventItem: React.FC<EventItemProps> = ({
           );
         }
         // Fallback to circle if custom SVG is not provided
+        return (
+          <circle
+            cx={x}
+            cy={y}
+            r={size}
+            {...commonProps}
+          />
+        );
+
+      case 'icon':
+        // Icon using foreignObject to embed HTML/CSS icons (FontAwesome, Material Icons, etc.)
+        if (style.iconClass) {
+          return (
+            <foreignObject
+              x={x - size}
+              y={y - size}
+              width={size * 2}
+              height={size * 2}
+              style={{
+                overflow: 'visible',
+                transition: 'all 0.2s ease-in-out',
+                filter: dropShadow
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '100%',
+                  color: style.color,
+                  fontSize: `${size * 1.5}px`,
+                }}
+              >
+                <i className={style.iconClass} />
+              </div>
+            </foreignObject>
+          );
+        }
+        // Fallback to circle
+        return (
+          <circle
+            cx={x}
+            cy={y}
+            r={size}
+            {...commonProps}
+          />
+        );
+
+      case 'image':
+        // Image using SVG <image> element
+        if (style.imageUrl) {
+          return (
+            <image
+              href={style.imageUrl}
+              x={x - size}
+              y={y - size}
+              width={size * 2}
+              height={size * 2}
+              preserveAspectRatio="xMidYMid meet"
+              className="event-marker event-marker-image"
+              style={{
+                transition: 'all 0.2s ease-in-out',
+                filter: dropShadow
+              }}
+            />
+          );
+        }
+        // Fallback to circle
+        return (
+          <circle
+            cx={x}
+            cy={y}
+            r={size}
+            {...commonProps}
+          />
+        );
+
+      case 'svg':
+        // Custom SVG element as React node
+        if (style.customElement) {
+          return (
+            <g
+              transform={`translate(${x}, ${y})`}
+              style={{
+                transition: 'all 0.2s ease-in-out',
+                filter: dropShadow
+              }}
+            >
+              {style.customElement}
+            </g>
+          );
+        }
+        // Fallback to circle
         return (
           <circle
             cx={x}

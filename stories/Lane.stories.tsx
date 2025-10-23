@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Lane } from '../src/components/Lane';
 import type { Lane as LaneType, CurveItem, EventItem, TimeRangeItem, TimeRange } from '../src/types';
 import { scaleTime } from 'd3-scale';

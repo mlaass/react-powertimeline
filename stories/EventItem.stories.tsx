@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 import { EventItem } from '../src/components/items/EventItem';
 import type { EventItem as EventItemType, TimeRange } from '../src/types';
@@ -132,6 +132,81 @@ export const LargeEvent: EventStory = {
           size: 20,
         }}
         label={{ text: 'Critical Event', position: 'top' }}
+        timeScale={createTimeScale(600)}
+        laneHeight={80}
+      />
+    </ItemWrapper>
+  ),
+};
+
+export const ImageEvent: EventStory = {
+  render: () => (
+    <ItemWrapper width={600} height={80}>
+      <EventItem
+        {...sampleEventItem}
+        style={{
+          markerType: 'image',
+          color: '#007bff',
+          size: 12,
+          imageUrl: 'https://api.iconify.design/mdi/alert.svg?color=%23dc3545',
+        }}
+        label={{ text: 'Image Event', position: 'top' }}
+        timeScale={createTimeScale(600)}
+        laneHeight={80}
+      />
+    </ItemWrapper>
+  ),
+};
+
+export const CustomSvgEvent: EventStory = {
+  render: () => (
+    <ItemWrapper width={600} height={80}>
+      <EventItem
+        {...sampleEventItem}
+        style={{
+          markerType: 'svg',
+          color: '#28a745',
+          size: 12,
+          customElement: (
+            <g>
+              {/* Custom star icon */}
+              <path
+                d="M 0,-10 L 2.5,-3 L 10,-3 L 4,2 L 6.5,10 L 0,5 L -6.5,10 L -4,2 L -10,-3 L -2.5,-3 Z"
+                fill="#ffc107"
+                stroke="#ff9800"
+                strokeWidth="1"
+              />
+            </g>
+          ),
+        }}
+        label={{ text: 'Custom SVG', position: 'top' }}
+        timeScale={createTimeScale(600)}
+        laneHeight={80}
+      />
+    </ItemWrapper>
+  ),
+};
+
+export const EmojiEvent: EventStory = {
+  render: () => (
+    <ItemWrapper width={600} height={80}>
+      <EventItem
+        {...sampleEventItem}
+        style={{
+          markerType: 'svg',
+          color: '#17a2b8',
+          size: 12,
+          customElement: (
+            <text
+              fontSize="20"
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              🚀
+            </text>
+          ),
+        }}
+        label={{ text: 'Emoji Event', position: 'top' }}
         timeScale={createTimeScale(600)}
         laneHeight={80}
       />
