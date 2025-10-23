@@ -273,7 +273,7 @@ function AccessibilityDemo() {
       <PowerTimeline
         lanes={lanes}
         items={items}
-        initialTimeRange={currentTimeRange}
+        initialTimeRange={initialTimeRange}
         onViewChange={handleViewChange}
         onItemClick={handleItemClick}
         onItemHover={handleItemHover}
