@@ -74,14 +74,17 @@ export function useD3Zoom(
   const [currentTimeRange, setCurrentTimeRange] = useState<TimeRange>(initialTimeRange);
   const zoomBehaviorRef = useRef<any>(null);
   const containerRef = useRef<SVGSVGElement | null>(null);
+  // The zoom behavior is created once, so it must reach the latest handler:
+  // a closure from the first render kept that render's width and initial
+  // range, and after a resize drags moved the view by the wrong factor.
+  const handleZoomTransformRef = useRef<(transform: any) => void>(() => {});
 
   // Create zoom behavior
   useEffect(() => {
     const zoomBehavior = d3Zoom()
       .scaleExtent([minScale, maxScale])
       .on('zoom', (event) => {
-        const { transform } = event;
-        handleZoomTransform(transform);
+        handleZoomTransformRef.current(event.transform);
       });
 
     // Configure gesture support
@@ -132,6 +135,7 @@ export function useD3Zoom(
     setCurrentTimeRange(newTimeRange);
     onViewChange(newTimeRange);
   }, [initialTimeRange, width, minDuration, maxDuration, onViewChange]);
+  handleZoomTransformRef.current = handleZoomTransform;
 
   // Apply zoom programmatically
   const applyZoom = useCallback((scale: number, translateX: number) => {

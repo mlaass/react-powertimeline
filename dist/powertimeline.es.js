@@ -2378,10 +2378,11 @@ function useD3Zoom(initialTimeRange, onViewChange, width, options = {}) {
   const [currentTimeRange, setCurrentTimeRange] = useState(initialTimeRange);
   const zoomBehaviorRef = useRef(null);
   const containerRef = useRef(null);
+  const handleZoomTransformRef = useRef(() => {
+  });
   useEffect(() => {
     const zoomBehavior = zoom().scaleExtent([minScale, maxScale]).on("zoom", (event) => {
-      const { transform } = event;
-      handleZoomTransform(transform);
+      handleZoomTransformRef.current(event.transform);
     });
     if (!enableTouch) {
       zoomBehavior.touchable(() => false);
@@ -2413,6 +2414,7 @@ function useD3Zoom(initialTimeRange, onViewChange, width, options = {}) {
     setCurrentTimeRange(newTimeRange);
     onViewChange(newTimeRange);
   }, [initialTimeRange, width, minDuration, maxDuration, onViewChange]);
+  handleZoomTransformRef.current = handleZoomTransform;
   const applyZoom = useCallback((scale, translateX) => {
     const transform = { k: scale, x: translateX, y: 0 };
     handleZoomTransform(transform);
