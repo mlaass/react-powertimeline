@@ -116,7 +116,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
           opacity={isSelected ? 1.0 : (isHovered ? 1.0 : (style?.opacity || 0.15))}
           className="curve-fill"
           style={{
-            transition: 'all 0.2s ease-in-out',
+            transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
             pointerEvents: 'none'
           }}
         />
@@ -131,7 +131,7 @@ export const CurveItem: React.FC<CurveItemProps> = ({
         opacity={1}
         className="curve-line"
         style={{
-          transition: 'all 0.2s ease-in-out',
+          transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
           pointerEvents: 'none'
         }}
       />

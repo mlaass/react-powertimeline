@@ -65,7 +65,7 @@ export const EventItem: React.FC<EventItemProps> = ({
       opacity: isSelected ? 1 : (isHovered ? 0.9 : 1),
       className: 'event-marker',
       style: {
-        transition: 'all 0.2s ease-in-out',
+        transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
         filter: dropShadow
       }
     };
@@ -82,7 +82,7 @@ export const EventItem: React.FC<EventItemProps> = ({
             strokeWidth={strokeWidth}
             className="event-marker"
             style={{
-              transition: 'all 0.2s ease-in-out',
+              transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
               filter: dropShadow
             }}
           />
@@ -158,7 +158,7 @@ export const EventItem: React.FC<EventItemProps> = ({
               height={size * 2}
               style={{
                 overflow: 'visible',
-                transition: 'all 0.2s ease-in-out',
+                transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
                 filter: dropShadow
               }}
             >
@@ -201,7 +201,7 @@ export const EventItem: React.FC<EventItemProps> = ({
               preserveAspectRatio="xMidYMid meet"
               className="event-marker event-marker-image"
               style={{
-                transition: 'all 0.2s ease-in-out',
+                transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
                 filter: dropShadow
               }}
             />
@@ -224,7 +224,7 @@ export const EventItem: React.FC<EventItemProps> = ({
             <g
               transform={`translate(${x}, ${y})`}
               style={{
-                transition: 'all 0.2s ease-in-out',
+                transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
                 filter: dropShadow
               }}
             >

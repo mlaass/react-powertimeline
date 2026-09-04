@@ -1229,7 +1229,7 @@ const CurveItem = ({
             opacity: isSelected ? 1 : isHovered ? 1 : style?.opacity || 0.15,
             className: "curve-fill",
             style: {
-              transition: "all 0.2s ease-in-out",
+              transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
               pointerEvents: "none"
             }
           }
@@ -1244,7 +1244,7 @@ const CurveItem = ({
             opacity: 1,
             className: "curve-line",
             style: {
-              transition: "all 0.2s ease-in-out",
+              transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
               pointerEvents: "none"
             }
           }
@@ -1337,7 +1337,7 @@ const EventItem = ({
       opacity: isSelected ? 1 : isHovered ? 0.9 : 1,
       className: "event-marker",
       style: {
-        transition: "all 0.2s ease-in-out",
+        transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
         filter: dropShadow
       }
     };
@@ -1354,7 +1354,7 @@ const EventItem = ({
             strokeWidth,
             className: "event-marker",
             style: {
-              transition: "all 0.2s ease-in-out",
+              transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
               filter: dropShadow
             }
           }
@@ -1429,7 +1429,7 @@ const EventItem = ({
               height: size * 2,
               style: {
                 overflow: "visible",
-                transition: "all 0.2s ease-in-out",
+                transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
                 filter: dropShadow
               },
               children: /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -1472,7 +1472,7 @@ const EventItem = ({
               preserveAspectRatio: "xMidYMid meet",
               className: "event-marker event-marker-image",
               style: {
-                transition: "all 0.2s ease-in-out",
+                transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
                 filter: dropShadow
               }
             }
@@ -1494,7 +1494,7 @@ const EventItem = ({
             {
               transform: `translate(${x}, ${y})`,
               style: {
-                transition: "all 0.2s ease-in-out",
+                transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
                 filter: dropShadow
               },
               children: style.customElement
@@ -1633,7 +1633,7 @@ const TimeRangeItem = ({
             ry: style.borderRadius || 2,
             className: "time-range-rect",
             style: {
-              transition: "all 0.2s ease-in-out",
+              transition: "opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out",
               filter: isSelected ? "drop-shadow(0 3px 12px rgba(0, 0, 0, 0.4)) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.3))" : isHovered ? "drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2))" : "none"
             }
           }
@@ -2399,8 +2399,8 @@ function useD3Zoom(initialTimeRange, onViewChange, width, options = {}) {
     const originalDuration = getTimeRangeDuration(initialTimeRange);
     const newDuration = Math.max(minDuration, Math.min(maxDuration, originalDuration / scale));
     const originalTimeScale = scaleTime().domain([initialTimeRange.start, initialTimeRange.end]).range([0, width]);
-    const newStart = originalTimeScale.invert(-translateX / scale);
-    const newEnd = new Date(newStart.getTime() + newDuration);
+    const newStart = new Date(Math.round(originalTimeScale.invert(-translateX / scale).getTime()));
+    const newEnd = new Date(newStart.getTime() + Math.round(newDuration));
     let newTimeRange = {
       start: newStart,
       end: newEnd
@@ -2502,18 +2502,8 @@ const PowerTimeline = forwardRef(({
     visible: false,
     x: 0
   });
-  const [referenceTimeRange, setReferenceTimeRange] = useState(initialTimeRange);
-  const lastDurationRef = useRef(
-    initialTimeRange.end.getTime() - initialTimeRange.start.getTime()
-  );
-  useEffect(() => {
-    const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
-    const lastDuration = lastDurationRef.current;
-    if (Math.abs(currentDuration - lastDuration) > 1) {
-      setReferenceTimeRange(currentTimeRange);
-      lastDurationRef.current = currentDuration;
-    }
-  }, [currentTimeRange]);
+  const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
+  const referenceTimeRange = useMemo(() => currentTimeRange, [currentDuration]);
   const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);
   const viewTransform = useTransform(referenceTimeRange, currentTimeRange, width);
   const { virtualizationState, performanceMetrics, itemsByLane } = useVirtualizationWithPerformance(

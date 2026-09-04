@@ -112,8 +112,10 @@ export function useD3Zoom(
       .range([0, width]);
     
     // Apply the inverse transform to get the new domain
-    const newStart = originalTimeScale.invert(-translateX / scale);
-    const newEnd = new Date(newStart.getTime() + newDuration);
+    // Whole milliseconds, so a pure pan keeps the duration exactly constant
+    // (fractional starts truncated by Date made it flicker by +-1ms and read as a zoom).
+    const newStart = new Date(Math.round(originalTimeScale.invert(-translateX / scale).getTime()));
+    const newEnd = new Date(newStart.getTime() + Math.round(newDuration));
     
     let newTimeRange: TimeRange = {
       start: newStart,

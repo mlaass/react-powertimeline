@@ -5,7 +5,7 @@
  * pan/zoom interactions, and accessibility features.
  */
 
-import React, { useRef, useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { select } from 'd3-selection';
 import type { PowerTimelineProps, PowerTimelineRef, TimeRange, ItemType } from './PowerTimeline.types';
 import { Lane } from '../Lane';
@@ -47,27 +47,13 @@ export const PowerTimeline = forwardRef<PowerTimelineRef, PowerTimelineProps>(({
     x: 0,
   });
 
-  // Reference time range - updates only on zoom, not on pan
-  // This allows smooth O(1) panning while accepting O(n) recalculation on zoom
-  const [referenceTimeRange, setReferenceTimeRange] = useState<TimeRange>(initialTimeRange);
-
-  // Detect zoom vs pan by checking if duration changed
-  const lastDurationRef = useRef<number>(
-    initialTimeRange.end.getTime() - initialTimeRange.start.getTime()
-  );
-
-  useEffect(() => {
-    const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
-    const lastDuration = lastDurationRef.current;
-
-    // If duration changed significantly (>1ms to avoid floating point issues), it's a zoom
-    if (Math.abs(currentDuration - lastDuration) > 1) {
-      // Zoom detected - update reference range to trigger item recalculation
-      setReferenceTimeRange(currentTimeRange);
-      lastDurationRef.current = currentDuration;
-    }
-    // If only position changed (same duration), it's a pan - keep reference range
-  }, [currentTimeRange]);
+  // Reference time range - updates only on zoom, not on pan.
+  // Derived during render (not in an effect) so the frame that changes the
+  // duration also repositions the items; otherwise every zoom step painted one
+  // frame with the old scale and the new translate, and items jittered.
+  const currentDuration = currentTimeRange.end.getTime() - currentTimeRange.start.getTime();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const referenceTimeRange = useMemo(() => currentTimeRange, [currentDuration]);
 
   // Create time scale from reference range (static during pan, updates on zoom)
   const timeScale = useReferenceTimeScale(referenceTimeRange, [0, width]);

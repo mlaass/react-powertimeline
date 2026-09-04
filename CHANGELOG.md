@@ -5,6 +5,13 @@ All notable changes to PowerTimeline React Component will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-09-04
+
+### Fixed
+- Time range bars, circle/square/diamond markers and curve paths lagged 200ms behind the axis and line markers on every zoom step: `transition: all` also animated their SVG geometry (rect x/width, circle cx/r, path d are CSS properties in Chrome). Transitions now cover only opacity, stroke-width and filter.
+- Every zoom step painted one frame with the old reference scale and the new pan translate; the reference range is now derived during render instead of in an effect.
+- Pan produced +-1ms duration jitter (fractional starts truncated by `Date`), which read as a zoom; zoom output is now whole milliseconds.
+
 ## [0.2.0] - 2025-10-23
 
 ### Added

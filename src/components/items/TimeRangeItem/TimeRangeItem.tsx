@@ -93,7 +93,7 @@ export const TimeRangeItem: React.FC<TimeRangeItemProps> = ({
         ry={style.borderRadius || 2}
         className="time-range-rect"
         style={{
-          transition: 'all 0.2s ease-in-out',
+          transition: 'opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out, filter 0.2s ease-in-out',
           filter: isSelected 
             ? 'drop-shadow(0 3px 12px rgba(0, 0, 0, 0.4)) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.3))'
             : isHovered 
