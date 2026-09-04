@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Curve labels sit on the curve's peak instead of the middle sample at the lane edge, where the lane's overflow clipped them.
+- Event labels sit inside the lane (top or bottom edge) instead of outside it, where the lane's overflow clipped them.
 
 ## [0.2.1] - 2026-09-04
 

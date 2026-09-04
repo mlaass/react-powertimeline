@@ -1550,7 +1550,7 @@ const EventItem = ({
           "text",
           {
             x,
-            y: label.position === "top" ? -10 : laneHeight + 15,
+            y: label.position === "bottom" ? laneHeight - 4 : 12,
             textAnchor: "middle",
             fontSize: label.style?.fontSize || 12,
             fill: label.style?.color || "#333",

@@ -278,11 +278,11 @@ export const EventItem: React.FC<EventItemProps> = ({
       {/* Marker */}
       {renderMarker()}
       
-      {/* Label */}
+      {/* Label, inside the lane: the lane clips, so outside it was never visible */}
       {label && (
         <text
           x={x}
-          y={label.position === 'top' ? -10 : laneHeight + 15}
+          y={label.position === 'bottom' ? laneHeight - 4 : 12}
           textAnchor="middle"
           fontSize={label.style?.fontSize || 12}
           fill={label.style?.color || '#333'}
