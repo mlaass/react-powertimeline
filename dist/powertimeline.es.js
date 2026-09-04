@@ -1174,9 +1174,9 @@ const CurveItem = ({
   isHovered = false,
   yScale
 }) => {
-  const { linePath, areaPath } = useMemo(() => {
+  const { linePath, areaPath, peak } = useMemo(() => {
     if (!timeScale || dataPoints.length < 2) {
-      return { linePath: "", areaPath: "" };
+      return { linePath: "", areaPath: "", peak: { x: 0, y: 0 } };
     }
     const curve = interpolationMap[interpolation];
     let effectiveYScale = yScale;
@@ -1196,9 +1196,11 @@ const CurveItem = ({
     }
     const lineGenerator = line().x((d) => timeScale.scale(d.time)).y((d) => effectiveYScale(d.value)).curve(curve);
     const areaGenerator = style?.fillColor ? area().x((d) => timeScale.scale(d.time)).y0(laneHeight).y1((d) => effectiveYScale(d.value)).curve(curve) : null;
+    const peakPoint = dataPoints.reduce((best, d) => d.value > best.value ? d : best, dataPoints[0]);
     return {
       linePath: lineGenerator(dataPoints) || "",
-      areaPath: areaGenerator ? areaGenerator(dataPoints) || "" : ""
+      areaPath: areaGenerator ? areaGenerator(dataPoints) || "" : "",
+      peak: { x: timeScale.scale(peakPoint.time), y: effectiveYScale(peakPoint.value) }
     };
   }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style?.fillColor]);
   const ariaLabel = useMemo(() => {
@@ -1284,8 +1286,8 @@ const CurveItem = ({
         label && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "text",
           {
-            x: timeScale.scale(dataPoints[Math.floor(dataPoints.length / 2)].time),
-            y: label.position === "top" ? -5 : laneHeight + 15,
+            x: peak.x,
+            y: label.position === "bottom" ? peak.y + 14 : peak.y - 6,
             textAnchor: "middle",
             fontSize: label.style?.fontSize || 12,
             fill: label.style?.color || "#333",
@@ -2039,7 +2041,7 @@ const Lane = ({
   const handleLaneMouseMove = useCallback((event) => {
     if (!timeScale || curveItems.length === 0) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
+    const mouseX = event.clientX - rect.left - (viewTransform?.translateX ?? 0);
     const highestCurve = findHighestCurveAtPixel(
       curveItems.map((item) => ({
         id: item.id,
@@ -2065,14 +2067,14 @@ const Lane = ({
     } else {
       setHoveredCurveId(null);
     }
-  }, [timeScale, curveItems, onItemHover, height]);
+  }, [timeScale, curveItems, onItemHover, height, viewTransform?.translateX]);
   const handleLaneMouseLeave = useCallback(() => {
     setHoveredCurveId(null);
   }, []);
   const handleLaneClick = useCallback((event) => {
     if (!timeScale || curveItems.length === 0) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
+    const mouseX = event.clientX - rect.left - (viewTransform?.translateX ?? 0);
     const highestCurve = findHighestCurveAtPixel(
       curveItems.map((item) => ({
         id: item.id,
@@ -2096,7 +2098,7 @@ const Lane = ({
         onItemClick(curveItem, enhancedEvent);
       }
     }
-  }, [timeScale, curveItems, onItemClick]);
+  }, [timeScale, curveItems, onItemClick, height, viewTransform?.translateX]);
   const renderItem = (item, index) => {
     const commonProps = {
       timeScale,

@@ -5,6 +5,14 @@ All notable changes to PowerTimeline React Component will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-09-04
+
+### Fixed
+- Curve hover and click hit-tested in the unpanned frame, so after a pan the lane picked the wrong curve.
+
+### Changed
+- Curve labels sit on the curve's peak instead of the middle sample at the lane edge, where the lane's overflow clipped them.
+
 ## [0.2.1] - 2026-09-04
 
 ### Fixed

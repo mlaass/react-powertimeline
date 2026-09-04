@@ -38,9 +38,9 @@ export const CurveItem: React.FC<CurveItemProps> = ({
   yScale,
 }) => {
   // Generate path data
-  const { linePath, areaPath } = useMemo(() => {
+  const { linePath, areaPath, peak } = useMemo(() => {
     if (!timeScale || dataPoints.length < 2) {
-      return { linePath: '', areaPath: '' };
+      return { linePath: '', areaPath: '', peak: { x: 0, y: 0 } };
     }
 
     const curve = interpolationMap[interpolation];
@@ -78,9 +78,13 @@ export const CurveItem: React.FC<CurveItemProps> = ({
       .y1(d => effectiveYScale(d.value))
       .curve(curve) : null;
 
+    // Highest point of the curve, where the label sits
+    const peakPoint = dataPoints.reduce((best, d) => (d.value > best.value ? d : best), dataPoints[0]);
+
     return {
       linePath: lineGenerator(dataPoints) || '',
       areaPath: areaGenerator ? (areaGenerator(dataPoints) || '') : '',
+      peak: { x: timeScale.scale(peakPoint.time), y: effectiveYScale(peakPoint.value) },
     };
   }, [dataPoints, timeScale, yScale, laneHeight, interpolation, style?.fillColor]);
 
@@ -171,11 +175,11 @@ export const CurveItem: React.FC<CurveItemProps> = ({
         );
       })}
 
-      {/* Label */}
+      {/* Label, above the peak (or just below it) */}
       {label && (
         <text
-          x={timeScale.scale(dataPoints[Math.floor(dataPoints.length / 2)].time)}
-          y={label.position === 'top' ? -5 : laneHeight + 15}
+          x={peak.x}
+          y={label.position === 'bottom' ? peak.y + 14 : peak.y - 6}
           textAnchor="middle"
           fontSize={label.style?.fontSize || 12}
           fill={label.style?.color || '#333'}

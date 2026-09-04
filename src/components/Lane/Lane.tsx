@@ -49,7 +49,8 @@ export const Lane: React.FC<LaneProps> = ({
     if (!timeScale || curveItems.length === 0) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
+    // Items sit in a group translated by the pan offset; undo it before hit-testing.
+    const mouseX = event.clientX - rect.left - (viewTransform?.translateX ?? 0);
 
     // Find the curve with the highest value at this position
     const highestCurve = findHighestCurveAtPixel(
@@ -83,7 +84,7 @@ export const Lane: React.FC<LaneProps> = ({
       // No curve found at this position, clear hover
       setHoveredCurveId(null);
     }
-  }, [timeScale, curveItems, onItemHover, height]);
+  }, [timeScale, curveItems, onItemHover, height, viewTransform?.translateX]);
 
   const handleLaneMouseLeave = useCallback(() => {
     setHoveredCurveId(null);
@@ -94,7 +95,8 @@ export const Lane: React.FC<LaneProps> = ({
     if (!timeScale || curveItems.length === 0) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
+    // Items sit in a group translated by the pan offset; undo it before hit-testing.
+    const mouseX = event.clientX - rect.left - (viewTransform?.translateX ?? 0);
 
     // Find the curve with the highest value at this position
     const highestCurve = findHighestCurveAtPixel(
@@ -124,7 +126,7 @@ export const Lane: React.FC<LaneProps> = ({
         onItemClick(curveItem, enhancedEvent as any);
       }
     }
-  }, [timeScale, curveItems, onItemClick]);
+  }, [timeScale, curveItems, onItemClick, height, viewTransform?.translateX]);
 
   // Render individual items
   const renderItem = (item: any, index: number) => {
